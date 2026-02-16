@@ -1,0 +1,31 @@
+name: Daily Bot Run
+on:
+  schedule:
+    - cron: '0 4 * * *' # To jest 4:00 rano
+  workflow_dispatch: # Pozwala Ci odpalić bota ręcznie przyciskiem
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - name: Run Bot
+        run: python app_master_engine.py
+
+      - name: Save Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json
+          git commit -m "Auto-update data" || echo "No changes"
+          git push
