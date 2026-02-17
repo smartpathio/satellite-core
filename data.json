@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "market": "US",
+        "title": "Minimalist Pet Tracker",
+        "score": 85,
+        "risk": "Low",
+        "decision": "TEST",
+        "desc": "High demand on TikTok USA, low BSR on Amazon.",
+        "action": "Order 50 units for FB Ads testing."
+    },
+    {
+        "id": 2,
+        "market": "KDP",
+        "title": "Gratitude Journal for Truckers",
+        "score": 45,
+        "risk": "Medium",
+        "decision": "WATCH",
+        "desc": "Niche exists but CPC is rising.",
+        "action": "Wait for keyword cost stabilization."
+    }
+]
