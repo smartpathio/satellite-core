@@ -1,44 +1,26 @@
 [
     {
-        "market": "KDP",
-        "title": "Gratitude Journal for Truckers",
-        "desc": "High demand, low competition in US market.",
-        "score": "95%",
+        "market": "USA",
+        "title": "TikTok Trend: LED Pet Collars",
+        "description": "DESCRIPTIVE: 250k views in 48h (TikTok Creative Center). Competitive analysis shows low saturation in Central Europe.",
+        "prediction": "PREDICTIVE: Projected 300% ROI if launched before peak trend in 14 days.",
+        "score": "92%",
         "decision": "TEST"
     },
     {
-        "market": "US",
-        "title": "Minimalist Pet Tracker",
-        "desc": "Trending on TikTok, high engagement.",
-        "score": "45%",
-        "decision": "WATCH"
-    },
-    {
         "market": "KDP",
-        "title": "Coloring Book for Seniors",
-        "desc": "Stable niche, moderate ads cost.",
-        "score": "82%",
+        "title": "Logistics Planner for EU Routes",
+        "description": "DIAGNOSTIC: High search volume for 'Driver Daily Logs' in DE/PL markets. Low quality competition currently.",
+        "prediction": "PREDICTIVE: Estimated passive income $400/mo within 90 days of launch.",
+        "score": "81%",
         "decision": "TEST"
     },
     {
-        "market": "LOG",
-        "title": "Warehouse Optimization",
-        "desc": "Route efficiency up by 12% this week.",
+        "market": "LOGISTICS",
+        "title": "Route Optimization: Swidnica - Hamburg",
+        "description": "DESCRIPTIVE: Fuel prices vs cargo weight analysis. Diagnostic shows 15% efficiency loss on return legs.",
+        "prediction": "PREDICTIVE: AI-driven route adjustment will save 200 EUR per vehicle/week.",
         "score": "88%",
-        "decision": "TEST"
-    },
-    {
-        "market": "US",
-        "title": "Eco-Friendly Yoga Mat",
-        "desc": "Price wars starting, margins dropping.",
-        "score": "30%",
-        "decision": "DROP"
-    },
-    {
-        "market": "KDP",
-        "title": "Sudoku for Teens",
-        "desc": "New trend emerging in puzzles.",
-        "score": "71%",
         "decision": "WATCH"
     }
 ]

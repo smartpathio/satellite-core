@@ -1,51 +1,53 @@
-let currentData = [];
+let rawData = [];
 
-async function loadData() {
+async function fetchData() {
     try {
-        const response = await fetch('data.json');
-        currentData = await response.json();
-        renderCards('ALL');
-        document.getElementById('last-update').innerText = 'Sync: ' + new Date().toLocaleTimeString();
-    } catch (error) {
-        console.error("Błąd ładowania:", error);
-        document.getElementById('last-update').innerText = 'Offline Mode';
+        const res = await fetch('data.json');
+        rawData = await res.json();
+        render(rawData);
+        document.getElementById('last-update').innerText = 'SYSTEM LIVE | ' + new Date().toLocaleTimeString();
+    } catch (e) {
+        document.getElementById('last-update').innerText = 'LINK DISRUPTED';
     }
 }
 
-function renderCards(filterType) {
-    const dashboard = document.getElementById('dashboard');
-    dashboard.innerHTML = '';
+function render(data) {
+    const container = document.getElementById('dashboard');
+    container.innerHTML = '';
 
-    const filteredItems = filterType === 'ALL' 
-        ? currentData 
-        : currentData.filter(item => item.market === filterType);
-
-    filteredItems.forEach(item => {
+    data.forEach(item => {
+        const score = parseInt(item.score);
         const card = document.createElement('div');
-        const scoreNum = parseInt(item.score);
-        
-        card.className = `card ${scoreNum > 70 ? 'high-score' : 'low-score'}`;
+        card.className = `card ${score > 70 ? 'high-score' : 'low-score'}`;
         
         card.innerHTML = `
-            <span class="score-tag ${scoreNum > 70 ? 'neon-green' : ''}">${item.score}</span>
-            <small style="color: var(--neon-blue)">${item.market}</small>
-            <h3 style="margin: 10px 0">${item.title}</h3>
-            <p style="font-size: 0.9em; opacity: 0.8">${item.desc}</p>
-            <button class="decision-btn ${item.decision.toLowerCase()}">${item.decision}</button>
+            <div class="score-tag" style="color: ${score > 70 ? 'var(--neon-green)' : 'var(--neon-red)'}">${item.score}</div>
+            <small style="color: var(--text-dim)">${item.market}</small>
+            <h2 style="margin: 5px 0 15px 0; font-size: 1.4rem;">${item.title}</h2>
+            
+            <div class="analysis-section">
+                <span class="analysis-label">DESCRIPTIVE / DIAGNOSTIC</span>
+                <p>${item.description}</p>
+                
+                <span class="analysis-label">PREDICTIVE ANALYTICS</span>
+                <p><em>${item.prediction}</em></p>
+            </div>
+
+            <button class="decision-btn ${item.decision.toLowerCase()}">
+                PRESCRIPTIVE: ${item.decision}
+            </button>
         `;
-        dashboard.appendChild(card);
-    });
-
-    // Aktualizacja wyglądu przycisków nav
-    document.querySelectorAll('nav button').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${filterType}'`));
+        container.appendChild(card);
     });
 }
 
-// Funkcja wywoływana przez przyciski
-function filter(type) {
-    renderCards(type);
+function filter(market) {
+    const btns = document.querySelectorAll('nav button');
+    btns.forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const filtered = market === 'ALL' ? rawData : rawData.filter(i => i.market === market);
+    render(filtered);
 }
 
-// Start aplikacji
-loadData();
+fetchData();
