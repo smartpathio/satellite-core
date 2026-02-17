@@ -1,37 +1,51 @@
+let currentData = [];
+
 async function loadData() {
     try {
         const response = await fetch('data.json');
-        const data = await response.json();
-        const dashboard = document.getElementById('dashboard');
-        dashboard.innerHTML = ''; // Czyścimy "Syncing..."
-
-        data.forEach(item => {
-            const card = document.createElement('div');
-            // Jeśli score > 70 dajemy zieloną ramkę, inaczej czerwoną
-            card.className = `card ${item.score > 70 ? 'high-score' : 'low-score'}`;
-            
-            card.innerHTML = `
-                <span class="score-tag">${item.score}%</span>
-                <h3>${item.market || 'PROJECT'}</h3>
-                <p>${item.title || 'No Title'}</p>
-                <button class="decision-btn ${item.decision.toLowerCase()}">${item.decision}</button>
-            `;
-            dashboard.appendChild(card);
-        });
-        
-        document.getElementById('last-update').innerText = 'Live Data: ' + new Date().toLocaleTimeString();
+        currentData = await response.json();
+        renderCards('ALL');
+        document.getElementById('last-update').innerText = 'Sync: ' + new Date().toLocaleTimeString();
     } catch (error) {
-        console.error('Błąd ładowania danych:', error);
-        document.getElementById('last-update').innerText = 'Data Error';
+        console.error("Błąd ładowania:", error);
+        document.getElementById('last-update').innerText = 'Offline Mode';
     }
 }
 
-// Funkcja obsługująca przyciski w menu
-function filter(type) {
-    console.log('Filtrowanie:', type);
-    // Na razie przeładowujemy dane, żeby sprawdzić czy przycisk w ogóle "klika"
-    loadData();
+function renderCards(filterType) {
+    const dashboard = document.getElementById('dashboard');
+    dashboard.innerHTML = '';
+
+    const filteredItems = filterType === 'ALL' 
+        ? currentData 
+        : currentData.filter(item => item.market === filterType);
+
+    filteredItems.forEach(item => {
+        const card = document.createElement('div');
+        const scoreNum = parseInt(item.score);
+        
+        card.className = `card ${scoreNum > 70 ? 'high-score' : 'low-score'}`;
+        
+        card.innerHTML = `
+            <span class="score-tag ${scoreNum > 70 ? 'neon-green' : ''}">${item.score}</span>
+            <small style="color: var(--neon-blue)">${item.market}</small>
+            <h3 style="margin: 10px 0">${item.title}</h3>
+            <p style="font-size: 0.9em; opacity: 0.8">${item.desc}</p>
+            <button class="decision-btn ${item.decision.toLowerCase()}">${item.decision}</button>
+        `;
+        dashboard.appendChild(card);
+    });
+
+    // Aktualizacja wyglądu przycisków nav
+    document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${filterType}'`));
+    });
 }
 
-// Odpalamy przy starcie strony
+// Funkcja wywoływana przez przyciski
+function filter(type) {
+    renderCards(type);
+}
+
+// Start aplikacji
 loadData();
