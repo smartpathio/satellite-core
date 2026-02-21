@@ -1,33 +1,34 @@
 :root {
-    --bg: #050505;
-    --card: rgba(255, 255, 255, 0.05);
+    --bg-dark: #020202;
+    --card-bg: #0a0a0a;
     --neon-blue: #00d2ff;
     --neon-green: #39ff14;
     --neon-red: #ff3131;
-    --text: #ffffff;
+    --text-main: #e0e0e0;
+    --text-dim: #888888;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--text);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
     font-family: 'Inter', sans-serif;
     margin: 0;
     display: flex;
     justify-content: center;
-    -webkit-tap-highlight-color: transparent;
 }
 
 #app {
     width: 100%;
-    max-width: 500px; /* Szerokość idealna pod smartfona */
+    max-width: 1400px;
     padding: 20px;
-    min-height: 100vh;
 }
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 20px;
     margin-bottom: 30px;
 }
 
@@ -35,49 +36,89 @@ header {
 
 nav {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 30px;
     overflow-x: auto;
 }
 
 nav button {
-    background: var(--card);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 10px;
-    white-space: nowrap;
-}
-
-.card {
-    background: var(--card);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-left: 5px solid var(--neon-blue);
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--text-dim);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
     transition: 0.3s;
 }
 
-.card.high-score { border-left-color: var(--neon-green); }
-.card.low-score { border-left-color: var(--neon-red); }
+nav button.active {
+    border-color: var(--neon-blue);
+    color: var(--neon-blue);
+    background: rgba(0, 210, 255, 0.1);
+}
+
+#dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid #1a1a1a;
+    padding: 25px;
+    position: relative;
+    border-top: 4px solid var(--neon-blue);
+}
+
+.card.high-score { border-top-color: var(--neon-green); }
+.card.low-score { border-top-color: var(--neon-red); }
 
 .score-tag {
-    float: right;
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
     font-weight: bold;
-    font-size: 1.2em;
+}
+
+.analysis-section {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.analysis-label {
+    color: var(--neon-blue);
+    display: block;
+    font-weight: bold;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    margin-top: 10px;
 }
 
 .decision-btn {
     width: 100%;
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
+    margin-top: 25px;
+    padding: 15px;
     border: none;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    cursor: pointer;
 }
 
-.test { background-color: var(--neon-green); color: black; }
-.watch { background-color: orange; color: black; }
-.drop { background-color: var(--neon-red); color: white; }
+.test { background: var(--neon-green); color: black; }
+.watch { background: #ffcc00; color: black; }
+.drop { background: var(--neon-red); color: white; }
+
+.pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--neon-green);
+    display: inline-block;
+    margin-left: 10px;
+}

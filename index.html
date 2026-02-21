@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SATELLITE CORE v2.0</title>
+    <title>SATELLITE CORE | Intelligence Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
         <header>
             <h1>SATELLITE <span class="neon">CORE</span></h1>
             <div id="status-bar">
-                <span id="last-update">Syncing...</span>
+                <span id="last-update">CONNECTING TO NODES...</span>
                 <div class="pulse"></div>
             </div>
         </header>
 
         <nav>
-            <button onclick="filter('ALL')" class="active">ALL</button>
-            <button onclick="filter('US')">USA E-COM</button>
-            <button onclick="filter('KDP')">KDP</button>
-            <button onclick="filter('LOG')">LOGISTICS</button>
+            <button onclick="filter('ALL')" class="active">ALL NODES</button>
+            <button onclick="filter('KDP')">AMAZON KDP</button>
+            <button onclick="filter('USA')">USA MARKET</button>
+            <button onclick="filter('LOGISTICS')">LOGISTICS</button>
+            <button onclick="filter('TRENDS')">AI TRENDS</button>
         </nav>
 
         <main id="dashboard">
             </main>
-
-        <footer>
-            <button id="gen-pdf">GENERATE PDF REPORT</button>
-        </footer>
     </div>
     <script src="app.js"></script>
 </body>

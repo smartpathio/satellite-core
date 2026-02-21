@@ -1,22 +1,26 @@
 [
     {
-        "id": 1,
-        "market": "US",
-        "title": "Minimalist Pet Tracker",
-        "score": 85,
-        "risk": "Low",
-        "decision": "TEST",
-        "desc": "High demand on TikTok USA, low BSR on Amazon.",
-        "action": "Order 50 units for FB Ads testing."
+        "market": "USA",
+        "title": "TikTok Trend: LED Pet Collars",
+        "description": "DESCRIPTIVE: 250k views in 48h (TikTok Creative Center). Competitive analysis shows low saturation in Central Europe.",
+        "prediction": "PREDICTIVE: Projected 300% ROI if launched before peak trend in 14 days.",
+        "score": "92%",
+        "decision": "TEST"
     },
     {
-        "id": 2,
         "market": "KDP",
-        "title": "Gratitude Journal for Truckers",
-        "score": 45,
-        "risk": "Medium",
-        "decision": "WATCH",
-        "desc": "Niche exists but CPC is rising.",
-        "action": "Wait for keyword cost stabilization."
+        "title": "Logistics Planner for EU Routes",
+        "description": "DIAGNOSTIC: High search volume for 'Driver Daily Logs' in DE/PL markets. Low quality competition currently.",
+        "prediction": "PREDICTIVE: Estimated passive income $400/mo within 90 days of launch.",
+        "score": "81%",
+        "decision": "TEST"
+    },
+    {
+        "market": "LOGISTICS",
+        "title": "Route Optimization: Swidnica - Hamburg",
+        "description": "DESCRIPTIVE: Fuel prices vs cargo weight analysis. Diagnostic shows 15% efficiency loss on return legs.",
+        "prediction": "PREDICTIVE: AI-driven route adjustment will save 200 EUR per vehicle/week.",
+        "score": "88%",
+        "decision": "WATCH"
     }
 ]
