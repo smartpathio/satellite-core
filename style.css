@@ -6,6 +6,7 @@
     --neon-red: #ff3131;
     --text-main: #e0e0e0;
     --text-dim: #888888;
+    --priority-gold: #ffcc00; /* Nowy kolor dla priorytetów */
 }
 
 body {
@@ -20,7 +21,7 @@ body {
 #app {
     width: 100%;
     max-width: 1400px;
-    padding: 20px;
+    padding: 15px; /* Zmniejszone dla mobile */
 }
 
 header {
@@ -29,27 +30,37 @@ header {
     align-items: center;
     border-bottom: 1px solid #1a1a1a;
     padding-bottom: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+/* Tytuł chowa się lub zmniejsza na bardzo małych ekranach */
+@media (max-width: 480px) {
+    header h1 { font-size: 1.2rem; }
 }
 
 .neon { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
 
 nav {
     display: flex;
-    gap: 12px;
-    margin-bottom: 30px;
-    overflow-x: auto;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto; /* Kluczowe: pozwala przewijać przyciski na boki na telefonie */
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
 }
+
+nav::-webkit-scrollbar { display: none; } /* Chowa pasek przewijania w menu */
 
 nav button {
     background: transparent;
     border: 1px solid #333;
     color: var(--text-dim);
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
     font-family: 'JetBrains Mono', monospace;
     transition: 0.3s;
+    white-space: nowrap; /* Napisy w przyciskach nie pękają na pół */
 }
 
 nav button.active {
@@ -60,33 +71,42 @@ nav button.active {
 
 #dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Elastyczne kolumny */
+    gap: 20px;
 }
 
+/* STYLE KARTY */
 .card {
     background: var(--card-bg);
     border: 1px solid #1a1a1a;
-    padding: 25px;
+    padding: 20px;
     position: relative;
     border-top: 4px solid var(--neon-blue);
+    display: flex;
+    flex-direction: column;
 }
 
 .card.high-score { border-top-color: var(--neon-green); }
 .card.low-score { border-top-color: var(--neon-red); }
 
+/* NOWE: Wyróżnienie DPE/Commerce */
+.core-project {
+    border-right: 2px solid var(--neon-blue) !important;
+    background: linear-gradient(145deg, #0a0a0a 0%, #0d151a 100%);
+}
+
 .score-tag {
     position: absolute;
-    top: 20px;
-    right: 25px;
+    top: 15px;
+    right: 20px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
 }
 
 .analysis-section {
-    margin-top: 20px;
-    font-size: 0.85rem;
+    margin-top: 15px;
+    font-size: 0.9rem; /* Lekko powiększone dla czytelności na tel */
     line-height: 1.5;
 }
 
@@ -96,21 +116,23 @@ nav button.active {
     font-weight: bold;
     font-size: 0.7rem;
     letter-spacing: 1px;
-    margin-top: 10px;
+    margin-top: 12px;
+    text-transform: uppercase;
 }
 
 .decision-btn {
     width: 100%;
-    margin-top: 25px;
-    padding: 15px;
+    margin-top: auto; /* Zawsze na dole karty */
+    padding: 12px;
     border: none;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     cursor: pointer;
+    text-transform: uppercase;
 }
 
 .test { background: var(--neon-green); color: black; }
-.watch { background: #ffcc00; color: black; }
+.watch { background: var(--priority-gold); color: black; }
 .drop { background: var(--neon-red); color: white; }
 
 .pulse {
@@ -121,4 +143,17 @@ nav button.active {
     box-shadow: 0 0 8px var(--neon-green);
     display: inline-block;
     margin-left: 10px;
+}
+
+/* FULL RESPONSIVE FIXES */
+@media (max-width: 600px) {
+    #dashboard {
+        grid-template-columns: 1fr; /* Jedna kolumna na telefonie */
+    }
+    .card {
+        padding: 15px;
+    }
+    .score-tag {
+        font-size: 1rem;
+    }
 }
