@@ -1,26 +1,26 @@
 [
     {
-        "market": "USA",
-        "title": "TikTok Trend: LED Pet Collars",
-        "description": "DESCRIPTIVE: 250k views in 48h (TikTok Creative Center). Competitive analysis shows low saturation in Central Europe.",
-        "prediction": "PREDICTIVE: Projected 300% ROI if launched before peak trend in 14 days.",
-        "score": "92%",
+        "market": "SCANDI / TERMINALS",
+        "title": "Heavy Equipment Ops: Oslo Port Terminal",
+        "description": "DIGITAL BODY LANGUAGE: Direct contract via recognized agency. Includes 'Sikkerhetskurs' certification support. Housing nearby (verified locations).",
+        "prediction": "PREDICTIVE: High stability (2-year project). Rate: 350-420 NOK/h. Safety score: 98% (Legal & Secure).",
+        "score": "97%",
         "decision": "TEST"
     },
     {
-        "market": "KDP",
-        "title": "Logistics Planner for EU Routes",
-        "description": "DIAGNOSTIC: High search volume for 'Driver Daily Logs' in DE/PL markets. Low quality competition currently.",
-        "prediction": "PREDICTIVE: Estimated passive income $400/mo within 90 days of launch.",
-        "score": "81%",
-        "decision": "TEST"
-    },
-    {
-        "market": "LOGISTICS",
-        "title": "Route Optimization: Swidnica - Hamburg",
-        "description": "DESCRIPTIVE: Fuel prices vs cargo weight analysis. Diagnostic shows 15% efficiency loss on return legs.",
-        "prediction": "PREDICTIVE: AI-driven route adjustment will save 200 EUR per vehicle/week.",
-        "score": "88%",
+        "market": "DPE / COMMERCE",
+        "title": "Supply Chain Digitization: Stockholm Hub",
+        "description": "DIAGNOSTIC: Integration of DPE components for heavy machinery parts distribution. Modern stack, agile environment.",
+        "prediction": "PREDICTIVE: Potential for long-term B2B partnership. Digital maturity of client: High.",
+        "score": "91%",
         "decision": "WATCH"
+    },
+    {
+        "market": "LOGISTICS / PL",
+        "title": "Intermodal Corridor: Świdnica - Gdynia - Karlskrona",
+        "description": "DESCRIPTIVE: Analysis of heavy load terminals and transit times. Checking agency credibility and accommodation standards in Gdynia/Karlskrona.",
+        "prediction": "PREDICTIVE: Optimized routes will reduce downtime by 12h per cycle. ROI: Significant.",
+        "score": "89%",
+        "decision": "TEST"
     }
 ]
