@@ -2,89 +2,39 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SATELLITE CORE V8</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Report</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; padding: 20px; border-radius: 15px; shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { color: #1a73e8; font-size: 1.5rem; margin-bottom: 20px; }
+        .data-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .label { font-size: 0.8rem; color: #666; display: block; }
+        .value { font-size: 1.1rem; font-weight: bold; color: #202124; }
+        .status { color: green; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <header>
-        <div id="meta-bar">Ładowanie protokołu...</div>
-        <h1>SATELLITE CORE</h1>
-        <div class="status-badge">LIVE DECISION ENGINE</div>
-    </header>
-
-    <main id="app">
-        <section id="decisions">
-            <h2 class="section-title">DECISION SUMMARY</h2>
-            <div id="decision-container"></div>
-        </section>
-
-        <section id="intelligence">
-            <h2 class="section-title">INTELLIGENCE & COMPARISON</h2>
-            <div id="signals-container"></div>
-            <div id="comparisons-container"></div>
-        </section>
-
-        <section id="security">
-            <h2 class="section-title">WARNINGS & EXCLUSIONS</h2>
-            <div id="warnings-container"></div>
-        </section>
-    </main>
+    <div class="card">
+        <h1>🛰️ Satellite Daily</h1>
+        <div id="report">Ładowanie raportu...</div>
+    </div>
 
     <script>
-        async function loadSatelliteData() {
-            try {
-                const response = await fetch('data.json');
-                const data = await response.json();
-                
-                // Meta
-                document.getElementById('meta-bar').innerText = 
-                    `WINDOW: ${data.meta.analysis_window_days}D | CONFIDENCE: ${(data.meta.confidence_overall * 100).toFixed(0)}% | ${data.meta.generated_at}`;
-
-                // Render Decyzji
-                const dContainer = document.getElementById('decision-container');
-                // Łączymy wszystkie decyzje z summary w jedną listę do renderowania
-                const allDecisions = [...(data.deep_analysis || [])];
-                
-                dContainer.innerHTML = allDecisions.map(d => `
-                    <div class="card decision-card ${d.decision.toLowerCase()}">
-                        <div class="card-header">
-                            <span class="domain-tag">${d.domain.toUpperCase()}</span>
-                            <span class="decision-tag">${d.decision}</span>
-                        </div>
-                        <h3>${d.niche_or_area}</h3>
-                        <p class="reason">${d.reason_short}</p>
-                        <div class="do-not">❌ DO NOT: ${d.do_not}</div>
-                        <div class="card-footer">
-                            <span>RISK: ${d.risk_level}</span>
-                            <span>HORIZON: ${d.time_horizon}</span>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Render Sygnałów
-                const sContainer = document.getElementById('signals-container');
-                sContainer.innerHTML = data.signals.map(s => `
-                    <div class="signal-mini">
-                        <span class="dir-${s.direction}">${s.direction === 'up' ? '▲' : '▼'}</span>
-                        <strong>${s.metric}:</strong> ${s.value} (${s.source})
-                    </div>
-                `).join('');
-
-                // Render Ostrzeżeń
-                const wContainer = document.getElementById('warnings-container');
-                wContainer.innerHTML = data.warnings.map(w => `
-                    <div class="warning-alert impact-${w.impact}">
-                        <strong>⚠️ ${w.issue.toUpperCase()}</strong>: ${w.description}
-                    </div>
-                `).join('');
-
-            } catch (e) {
-                console.error("Błąd ładowania danych:", e);
-                document.getElementById('meta-bar').innerText = "BŁĄD DANYCH - SPRAWDŹ data.json";
-            }
-        }
-        window.onload = loadSatelliteData;
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const reportDiv = document.getElementById('report');
+                reportDiv.innerHTML = `
+                    <div class="data-row"><span class="label">Nisza:</span><span class="value">${data.niche}</span></div>
+                    <div class="data-row"><span class="label">Decyzja:</span><span class="value">${data.decision}</span></div>
+                    <div class="data-row"><span class="label">Powód:</span><span class="value">${data.reason}</span></div>
+                    <div class="data-row"><span class="label">Status:</span><span class="status">Aktywny</span></div>
+                `;
+            })
+            .catch(err => {
+                document.getElementById('report').innerHTML = "Błąd ładowania danych. Upewnij się, że bot wygenerował data.json";
+            });
     </script>
 </body>
 </html>
