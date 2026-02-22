@@ -3,38 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Report</title>
+    <title>Satellite Core Dashboard</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; padding: 20px; border-radius: 15px; shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h1 { color: #1a73e8; font-size: 1.5rem; margin-bottom: 20px; }
-        .data-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .label { font-size: 0.8rem; color: #666; display: block; }
-        .value { font-size: 1.1rem; font-weight: bold; color: #202124; }
-        .status { color: green; font-weight: bold; }
+        :root {
+            --bg: #0a0b10;
+            --card-bg: #161b22;
+            --neon-blue: #00d4ff;
+            --neon-green: #00ff41;
+            --text-dim: #8b949e;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; padding: 15px; margin: 0; }
+        nav { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
+        nav button { 
+            background: var(--card-bg); border: 1px solid #30363d; color: white; 
+            padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+        }
+        nav button.active { border-color: var(--neon-blue); color: var(--neon-blue); }
+        #last-update { font-size: 0.7rem; color: var(--neon-blue); margin-bottom: 10px; letter-spacing: 1px; }
+        .card { 
+            background: var(--card-bg); border-radius: 12px; padding: 20px; 
+            margin-bottom: 15px; border: 1px solid #30363d;
+        }
+        .high-score { border-left: 4px solid var(--neon-green); }
+        .core-project { box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>🛰️ Satellite Daily</h1>
-        <div id="report">Ładowanie raportu...</div>
-    </div>
 
-    <script>
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                const reportDiv = document.getElementById('report');
-                reportDiv.innerHTML = `
-                    <div class="data-row"><span class="label">Nisza:</span><span class="value">${data.niche}</span></div>
-                    <div class="data-row"><span class="label">Decyzja:</span><span class="value">${data.decision}</span></div>
-                    <div class="data-row"><span class="label">Powód:</span><span class="value">${data.reason}</span></div>
-                    <div class="data-row"><span class="label">Status:</span><span class="status">Aktywny</span></div>
-                `;
-            })
-            .catch(err => {
-                document.getElementById('report').innerHTML = "Błąd ładowania danych. Upewnij się, że bot wygenerował data.json";
-            });
-    </script>
+    <div id="last-update">SYSTEM INITIALIZING...</div>
+
+    <nav>
+        <button onclick="filter('ALL')" class="active">ALL</button>
+        <button onclick="filter('DPE')">DPE</button>
+        <button onclick="filter('COMMERCE')">COMMERCE</button>
+    </nav>
+
+    <main id="dashboard">
+        <div style="padding: 20px; text-align: center; color: var(--text-dim);">
+            Ładowanie danych satelitarnych...
+        </div>
+    </main>
+
+    <script src="app.js"></script>
 </body>
 </html>
