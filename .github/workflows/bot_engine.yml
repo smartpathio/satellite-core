@@ -2,12 +2,14 @@ name: Daily Satellite Report
 
 on:
   schedule:
-    - cron: '0 7 * * *' # Odpala o 8:00 rano czasu polskiego (7:00 UTC)
-  workflow_dispatch: # Pozwala Ci odpalić raport ręcznie jednym kliknięciem
+    - cron: '0 7 * * *' # 8:00 rano czasu polskiego
+  workflow_dispatch: # Twój ręczny przycisk "Run"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Daje botowi prawo do aktualizacji raportu na Twoim GitHubie
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,14 +22,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Instalujemy bezpośrednio, żeby uniknąć błędów ze ścieżką do requirements.txt
-          pip install fastapi uvicorn pydantic requests 
+          pip install requests python-dotenv
 
       - name: Run Analysis Engine
-        run: python app_master_engine.py
-        # To jest Twój główny plik, który widziałem na screenie
+        run: python generator.py
 
-      - name: Send Report Email
-        # Tu zakładamy, że Twój skrypt app_master_engine.py 
-        # sam wysyła maila lub generuje plik raportu.
-        run: echo "Analiza zakończona pomyślnie."
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json
+          git commit -m "Automatyczna aktualizacja raportu: $(date)" || echo "Brak zmian w danych"
+          git push

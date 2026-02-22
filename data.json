@@ -1,26 +1,73 @@
-[
+{
+  "meta": {
+    "generated_at": "2026-02-21T23:55:00Z",
+    "analysis_window_days": 30,
+    "markets_covered": ["NO", "PL", "US"],
+    "confidence_overall": 0.85
+  },
+  "decision_summary": {
+    "test": ["Operator Kalmar Drammen", "B2B E-commerce Analysis"],
+    "watch": ["Noclegi Moss"],
+    "drop": ["Giełda transportowa PL (low margin)"]
+  },
+  "deep_analysis": [
     {
-        "market": "SCANDI / TERMINALS",
-        "title": "Heavy Equipment Ops: Oslo Port Terminal",
-        "description": "DIGITAL BODY LANGUAGE: Direct contract via recognized agency. Includes 'Sikkerhetskurs' certification support. Housing nearby (verified locations).",
-        "prediction": "PREDICTIVE: High stability (2-year project). Rate: 350-420 NOK/h. Safety score: 98% (Legal & Secure).",
-        "score": "97%",
-        "decision": "TEST"
+      "domain": "jobs",
+      "market_from": "PL",
+      "market_to": "NO",
+      "niche_or_area": "Operator Kalmar - Drammen Port",
+      "decision": "TEST",
+      "reason_short": "Nagły skok zapotrzebowania (sezonowość). Stawki powyżej 420 NOK/h przy kontrakcie 4-tygodniowym.",
+      "risk_level": "medium",
+      "confidence": 0.9,
+      "time_horizon": "short",
+      "do_not": "Nie wysyłaj CV bez certyfikatu T1-T4 przetłumaczonego na norweski/angielski."
     },
     {
-        "market": "DPE / COMMERCE",
-        "title": "Supply Chain Digitization: Stockholm Hub",
-        "description": "DIAGNOSTIC: Integration of DPE components for heavy machinery parts distribution. Modern stack, agile environment.",
-        "prediction": "PREDICTIVE: Potential for long-term B2B partnership. Digital maturity of client: High.",
-        "score": "91%",
-        "decision": "WATCH"
-    },
-    {
-        "market": "LOGISTICS / PL",
-        "title": "Intermodal Corridor: Świdnica - Gdynia - Karlskrona",
-        "description": "DESCRIPTIVE: Analysis of heavy load terminals and transit times. Checking agency credibility and accommodation standards in Gdynia/Karlskrona.",
-        "prediction": "PREDICTIVE: Optimized routes will reduce downtime by 12h per cycle. ROI: Significant.",
-        "score": "89%",
-        "decision": "TEST"
+      "domain": "ecommerce",
+      "market_from": "US",
+      "market_to": "PL",
+      "niche_or_area": "DPE Strategy / Shopify Headless",
+      "decision": "WATCH",
+      "reason_short": "Duże zainteresowanie w USA, w Polsce rynek jeszcze nie nasycony. Czekamy na stabilizację stawek wdrożeniowych.",
+      "risk_level": "low",
+      "confidence": 0.75,
+      "time_horizon": "mid",
+      "do_not": "Nie inwestuj w reklamy Google Ads przed optymalizacją Core Web Vitals."
     }
-]
+  ],
+  "signals": [
+    {
+      "domain": "jobs",
+      "signal_type": "demand",
+      "metric": "offer_count",
+      "value": "12 nowych ogłoszeń (24h)",
+      "direction": "up",
+      "source": "finn.no"
+    }
+  ],
+  "comparisons": [
+    {
+      "domain": "jobs",
+      "market_a": "PL",
+      "market_b": "NO",
+      "metric": "salary",
+      "winner": "NO",
+      "comment": "Różnica w stawce netto to 280% na korzyść Norwegii przy zbliżonym koszcie życia w bofellesskap."
+    }
+  ],
+  "warnings": [
+    {
+      "domain": "housing",
+      "issue": "Kaucja (Depositum)",
+      "description": "W Drammen właściciele zaczęli wymagać konta depozytowego w DNB zamiast gotówki.",
+      "impact": "high"
+    }
+  ],
+  "excluded": [
+    {
+      "area": "TikTok Dropshipping",
+      "reason": "Zbyt duża zmienność algorytmu i niska jakość leada."
+    }
+  ]
+}

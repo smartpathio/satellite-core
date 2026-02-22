@@ -1,5 +1,2 @@
-fastapi
-uvicorn
-sqlalchemy[asyncio]
-asyncpg
-pydantic-settings
+requests
+python-dotenv

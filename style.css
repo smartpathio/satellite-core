@@ -1,159 +1,94 @@
 :root {
-    --bg-dark: #020202;
-    --card-bg: #0a0a0a;
-    --neon-blue: #00d2ff;
-    --neon-green: #39ff14;
-    --neon-red: #ff3131;
-    --text-main: #e0e0e0;
-    --text-dim: #888888;
-    --priority-gold: #ffcc00; /* Nowy kolor dla priorytetów */
+    --bg: #0a0c10;
+    --card: #161b22;
+    --text: #c9d1d9;
+    --test: #238636;
+    --watch: #d29922;
+    --drop: #da3633;
+    --accent: #58a6ff;
+    --warning: #f85149;
 }
 
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-#app {
-    width: 100%;
-    max-width: 1400px;
-    padding: 15px; /* Zmniejszone dla mobile */
+    padding-bottom: 50px;
+    line-height: 1.4;
 }
 
 header {
+    background: #010409;
+    padding: 20px;
+    border-bottom: 2px solid var(--accent);
+    text-align: center;
+}
+
+#meta-bar { font-size: 10px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; }
+h1 { margin: 0; font-size: 24px; letter-spacing: 2px; }
+
+.section-title {
+    padding: 15px 20px 5px;
+    font-size: 14px;
+    color: #8b949e;
+    text-transform: uppercase;
+}
+
+.card {
+    background: var(--card);
+    margin: 10px 15px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+}
+
+/* Kolory decyzji */
+.test { border-left: 6px solid var(--test); }
+.watch { border-left: 6px solid var(--watch); }
+.drop { border-left: 6px solid var(--drop); }
+
+.card-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.domain-tag { font-weight: bold; color: var(--accent); }
+.decision-tag { font-weight: bold; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.1); }
+
+h3 { margin: 0 0 10px 0; font-size: 20px; }
+.reason { font-size: 16px; margin-bottom: 12px; }
+
+.do-not {
+    background: rgba(218, 54, 51, 0.15);
+    color: #ff7b72;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px dashed var(--drop);
+}
+
+.card-footer {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-}
-
-/* Tytuł chowa się lub zmniejsza na bardzo małych ekranach */
-@media (max-width: 480px) {
-    header h1 { font-size: 1.2rem; }
-}
-
-.neon { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
-
-nav {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    overflow-x: auto; /* Kluczowe: pozwala przewijać przyciski na boki na telefonie */
-    padding-bottom: 10px;
-    -webkit-overflow-scrolling: touch;
-}
-
-nav::-webkit-scrollbar { display: none; } /* Chowa pasek przewijania w menu */
-
-nav button {
-    background: transparent;
-    border: 1px solid #333;
-    color: var(--text-dim);
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    transition: 0.3s;
-    white-space: nowrap; /* Napisy w przyciskach nie pękają na pół */
-}
-
-nav button.active {
-    border-color: var(--neon-blue);
-    color: var(--neon-blue);
-    background: rgba(0, 210, 255, 0.1);
-}
-
-#dashboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Elastyczne kolumny */
-    gap: 20px;
-}
-
-/* STYLE KARTY */
-.card {
-    background: var(--card-bg);
-    border: 1px solid #1a1a1a;
-    padding: 20px;
-    position: relative;
-    border-top: 4px solid var(--neon-blue);
-    display: flex;
-    flex-direction: column;
-}
-
-.card.high-score { border-top-color: var(--neon-green); }
-.card.low-score { border-top-color: var(--neon-red); }
-
-/* NOWE: Wyróżnienie DPE/Commerce */
-.core-project {
-    border-right: 2px solid var(--neon-blue) !important;
-    background: linear-gradient(145deg, #0a0a0a 0%, #0d151a 100%);
-}
-
-.score-tag {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.analysis-section {
     margin-top: 15px;
-    font-size: 0.9rem; /* Lekko powiększone dla czytelności na tel */
-    line-height: 1.5;
+    font-size: 12px;
+    color: #8b949e;
 }
 
-.analysis-label {
-    color: var(--neon-blue);
-    display: block;
-    font-weight: bold;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    margin-top: 12px;
-    text-transform: uppercase;
+.signal-mini {
+    background: #1c2128;
+    margin: 5px 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
-.decision-btn {
-    width: 100%;
-    margin-top: auto; /* Zawsze na dole karty */
+.dir-up { color: var(--test); }
+.dir-down { color: var(--drop); }
+
+.warning-alert {
+    background: rgba(248, 81, 73, 0.1);
+    border: 1px solid var(--warning);
+    margin: 10px 15px;
     padding: 12px;
-    border: none;
-    font-weight: bold;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-.test { background: var(--neon-green); color: black; }
-.watch { background: var(--priority-gold); color: black; }
-.drop { background: var(--neon-red); color: white; }
-
-.pulse {
-    width: 8px;
-    height: 8px;
-    background: var(--neon-green);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--neon-green);
-    display: inline-block;
-    margin-left: 10px;
-}
-
-/* FULL RESPONSIVE FIXES */
-@media (max-width: 600px) {
-    #dashboard {
-        grid-template-columns: 1fr; /* Jedna kolumna na telefonie */
-    }
-    .card {
-        padding: 15px;
-    }
-    .score-tag {
-        font-size: 1rem;
-    }
+    border-radius: 4px;
+    color: #ff7b72;
 }
