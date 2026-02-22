@@ -2,21 +2,17 @@ let rawData = [];
 
 async function fetchData() {
     try {
-        // Przypominajka: Sprawdź czy VPN wyłączony przed testem!
         const res = await fetch('data.json');
-        if (!res.ok) throw new Error('Błąd pobierania pliku data.json');
-        
+        if (!res.ok) throw new Error('Data not found');
         const jsonResponse = await res.json();
         
-        // Dynamiczne wyciąganie danych: obsługuje Twój format 'deep_analysis' lub zwykłą listę
-        rawData = jsonResponse.deep_analysis || (Array.isArray(jsonResponse) ? jsonResponse : [jsonResponse]);
-        
+        // Pobieramy dane z Twojej struktury 'deep_analysis'
+        rawData = jsonResponse.deep_analysis || [];
         render(rawData);
         
-        document.getElementById('last-update').innerText = 'SYSTEM LIVE | ' + new Date().toLocaleTimeString();
+        document.getElementById('last-update').innerText = 'SATELLITE LIVE | ' + new Date().toLocaleTimeString();
     } catch (e) {
-        console.error("Szczegóły błędu:", e);
-        document.getElementById('last-update').innerText = 'LINK DISRUPTED | BRAK DANYCH';
+        document.getElementById('last-update').innerText = 'LINK DISRUPTED | WAITING FOR BOT';
     }
 }
 
@@ -26,30 +22,35 @@ function render(data) {
     container.innerHTML = '';
 
     data.forEach(item => {
-        // Mapowanie pól pod Twój specyficzny plik JSON (widoczny na laptopie)
-        const niche = item.niche_or_area || item.niche || 'Satellite Scan';
+        const niche = item.niche_or_area || 'Satellite Analysis';
         const decision = (item.decision || 'WATCH').toUpperCase();
-        const reason = item.reason_short || item.reason || 'Processing data...';
-        const market = (item.domain || item.market || 'General').toUpperCase();
-        const score = item.confidence ? Math.round(item.confidence * 100) : (item.score || 0);
+        const reason = item.reason_short || 'No details provided';
+        const market = (item.domain || 'GENERAL').toUpperCase();
+        const score = item.confidence ? Math.round(item.confidence * 100) : 0;
+
+        // Logika kolorów przycisku
+        let btnColor = '#444'; // Domyślny szary
+        if (decision === 'BUY' || decision === 'YES') btnColor = '#28a745'; // Zielony
+        if (decision === 'WATCH' || decision === 'HOLD') btnColor = '#ffc107'; // Żółty
 
         const card = document.createElement('div');
-        // Klasy stylu
-        card.className = `card ${score > 70 ? 'high-score' : 'low-score'} ${market.includes('DPE') ? 'core-project' : ''}`;
+        card.className = `card ${score > 70 ? 'high-score' : 'low-score'}`;
         
         card.innerHTML = `
-            <div class="score-tag" style="color: ${score > 70 ? '#00ff41' : '#ff3131'}; font-weight: bold;">
-                ${score}% CONFIDENCE
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="color: ${score > 70 ? '#00ff41' : '#ff3131'}; font-weight: bold; font-size: 0.8rem;">
+                    ${score}% CONFIDENCE
+                </span>
+                <small style="color: #8b949e; text-transform: uppercase; font-size: 0.7rem;">${market}</small>
             </div>
-            <small style="color: #8b949e; letter-spacing: 1px;">${market}</small>
-            <h2 style="margin: 8px 0; font-size: 1.2rem; color: #fff;">${niche}</h2>
             
-            <div class="analysis-section" style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                <span style="font-size: 0.7rem; color: #00d4ff; font-weight: bold; display: block; margin-bottom: 5px;">ANALYSIS RESULT</span>
-                <p style="font-size: 0.9rem; color: #d1d5db; margin: 0;">${reason}</p>
+            <h2 style="margin: 0 0 10px 0; font-size: 1.3rem; color: #fff;">${niche}</h2>
+            
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border-left: 2px solid #00d4ff;">
+                <p style="font-size: 0.95rem; color: #d1d5db; margin: 0; line-height: 1.4;">${reason}</p>
             </div>
 
-            <button class="decision-btn" style="width: 100%; margin-top: 12px; padding: 12px; border: none; border-radius: 6px; font-weight: bold; background: ${decision === 'BUY' || decision === 'YES' ? '#28a745' : '#444'}; color: white;">
+            <button style="width: 100%; margin-top: 15px; padding: 14px; border: none; border-radius: 8px; font-weight: 800; background: ${btnColor}; color: ${decision === 'WATCH' ? '#000' : '#fff'}; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">
                 ACTION: ${decision}
             </button>
         `;
@@ -63,11 +64,10 @@ function filter(market) {
     if(event && event.target) event.target.classList.add('active');
 
     const filtered = market === 'ALL' ? rawData : rawData.filter(i => {
-        const m = (i.domain || i.market || '').toUpperCase();
+        const m = (i.domain || '').toUpperCase();
         return m.includes(market.toUpperCase());
     });
     render(filtered);
 }
 
-// Start systemu
 fetchData();
