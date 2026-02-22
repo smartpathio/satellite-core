@@ -1,56 +1,45 @@
-let rawData = [];
+let globalData = [];
 
-async function fetchData() {
+async function loadData() {
+    console.log("Próba pobrania danych...");
     try {
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error('Data not found');
-        const jsonResponse = await res.json();
+        const response = await fetch('data.json?t=' + Date.now());
+        const data = await response.json();
         
-        // Pobieramy dane z Twojej struktury 'deep_analysis'
-        rawData = jsonResponse.deep_analysis || [];
-        render(rawData);
+        // Wyciągamy dane z Twojej struktury
+        globalData = data.deep_analysis || [];
         
-        document.getElementById('last-update').innerText = 'SATELLITE LIVE | ' + new Date().toLocaleTimeString();
-    } catch (e) {
-        document.getElementById('last-update').innerText = 'LINK DISRUPTED | WAITING FOR BOT';
+        console.log("Dane pobrane:", globalData);
+        displayData(globalData);
+        
+        document.getElementById('last-update').innerText = 'LIVE | ' + new Date().toLocaleTimeString();
+    } catch (error) {
+        console.error("BŁĄD:", error);
+        document.getElementById('dashboard').innerHTML = "Błąd ładowania danych. Sprawdź plik data.json";
+        document.getElementById('last-update').innerText = 'LINK DISRUPTED';
     }
 }
 
-function render(data) {
+function displayData(items) {
     const container = document.getElementById('dashboard');
-    if (!container) return;
     container.innerHTML = '';
 
-    data.forEach(item => {
-        const niche = item.niche_or_area || 'Satellite Analysis';
-        const decision = (item.decision || 'WATCH').toUpperCase();
-        const reason = item.reason_short || 'No details provided';
-        const market = (item.domain || 'GENERAL').toUpperCase();
-        const score = item.confidence ? Math.round(item.confidence * 100) : 0;
+    if (items.length === 0) {
+        container.innerHTML = "Brak danych do wyświetlenia.";
+        return;
+    }
 
-        // Logika kolorów przycisku
-        let btnColor = '#444'; // Domyślny szary
-        if (decision === 'BUY' || decision === 'YES') btnColor = '#28a745'; // Zielony
-        if (decision === 'WATCH' || decision === 'HOLD') btnColor = '#ffc107'; // Żółty
-
+    items.forEach(item => {
         const card = document.createElement('div');
-        card.className = `card ${score > 70 ? 'high-score' : 'low-score'}`;
-        
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="color: ${score > 70 ? '#00ff41' : '#ff3131'}; font-weight: bold; font-size: 0.8rem;">
-                    ${score}% CONFIDENCE
-                </span>
-                <small style="color: #8b949e; text-transform: uppercase; font-size: 0.7rem;">${market}</small>
-            </div>
-            
-            <h2 style="margin: 0 0 10px 0; font-size: 1.3rem; color: #fff;">${niche}</h2>
-            
-            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border-left: 2px solid #00d4ff;">
-                <p style="font-size: 0.95rem; color: #d1d5db; margin: 0; line-height: 1.4;">${reason}</p>
-            </div>
+        card.className = 'card';
+        const score = item.confidence ? Math.round(item.confidence * 100) : 0;
+        const decision = (item.decision || 'WATCH').toUpperCase();
 
-            <button style="width: 100%; margin-top: 15px; padding: 14px; border: none; border-radius: 8px; font-weight: 800; background: ${btnColor}; color: ${decision === 'WATCH' ? '#000' : '#fff'}; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">
+        card.innerHTML = `
+            <div style="font-weight: bold; color: ${score > 70 ? '#00ff41' : '#ff3131'}">${score}% CONFIDENCE</div>
+            <h3>${item.niche_or_area || 'Analiza'}</h3>
+            <p>${item.reason_short || 'Brak opisu'}</p>
+            <button style="width: 100%; padding: 10px; background: ${decision === 'YES' || decision === 'BUY' ? '#28a745' : '#444'}; border: none; color: white; font-weight: bold;">
                 ACTION: ${decision}
             </button>
         `;
@@ -58,16 +47,23 @@ function render(data) {
     });
 }
 
-function filter(market) {
-    const btns = document.querySelectorAll('nav button');
-    btns.forEach(b => b.classList.remove('active'));
-    if(event && event.target) event.target.classList.add('active');
+// Nowa funkcja filtrowania (bez konfliktów nazw)
+function handleFilter(category) {
+    console.log("Filtrowanie:", category);
+    
+    // Wizualna zmiana przycisków
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('btn-' + category).classList.add('active');
 
-    const filtered = market === 'ALL' ? rawData : rawData.filter(i => {
-        const m = (i.domain || '').toUpperCase();
-        return m.includes(market.toUpperCase());
-    });
-    render(filtered);
+    if (category === 'ALL') {
+        displayData(globalData);
+    } else {
+        const filtered = globalData.filter(i => 
+            (i.domain || i.market || '').toUpperCase().includes(category)
+        );
+        displayData(filtered);
+    }
 }
 
-fetchData();
+// Start
+loadData();

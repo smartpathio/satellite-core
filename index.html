@@ -3,47 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Core Dashboard</title>
+    <title>Satellite Core</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>">
     <style>
-        :root {
-            --bg: #0a0b10;
-            --card-bg: #161b22;
-            --neon-blue: #00d4ff;
-            --neon-green: #00ff41;
-            --text-dim: #8b949e;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; padding: 15px; margin: 0; }
-        nav { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
-        nav button { 
-            background: var(--card-bg); border: 1px solid #30363d; color: white; 
-            padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap;
-        }
-        nav button.active { border-color: var(--neon-blue); color: var(--neon-blue); }
-        #last-update { font-size: 0.7rem; color: var(--neon-blue); margin-bottom: 10px; letter-spacing: 1px; }
-        .card { 
-            background: var(--card-bg); border-radius: 12px; padding: 20px; 
-            margin-bottom: 15px; border: 1px solid #30363d;
-        }
-        .high-score { border-left: 4px solid var(--neon-green); }
-        .core-project { box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+        body { background: #0a0b10; color: white; font-family: sans-serif; padding: 20px; }
+        nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        button { background: #21262d; color: white; border: 1px solid #30363d; padding: 12px; border-radius: 8px; cursor: pointer; }
+        button.active { border-color: #00d4ff; color: #00d4ff; }
+        .card { background: #161b22; border: 1px solid #30363d; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
-
-    <div id="last-update">SYSTEM INITIALIZING...</div>
-
+    <div id="last-update" style="color: #8b949e; text-align: right; font-size: 0.8rem;">Łączenie...</div>
     <nav>
-        <button onclick="filter('ALL')" class="active">ALL</button>
-        <button onclick="filter('DPE')">DPE</button>
-        <button onclick="filter('COMMERCE')">COMMERCE</button>
+        <button id="btn-ALL" onclick="handleFilter('ALL')">ALL</button>
+        <button id="btn-DPE" onclick="handleFilter('DPE')">DPE</button>
+        <button id="btn-COMMERCE" onclick="handleFilter('COMMERCE')">COMMERCE</button>
     </nav>
+    <div id="dashboard">Czekam na dane...</div>
 
-    <main id="dashboard">
-        <div style="padding: 20px; text-align: center; color: var(--text-dim);">
-            Ładowanie danych satelitarnych...
-        </div>
-    </main>
-
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>
