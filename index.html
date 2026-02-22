@@ -6,22 +6,37 @@
     <title>Satellite Core</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>">
     <style>
-        body { background: #0a0b10; color: white; font-family: sans-serif; padding: 20px; }
-        nav { display: flex; gap: 10px; margin-bottom: 20px; }
-        button { background: #21262d; color: white; border: 1px solid #30363d; padding: 12px; border-radius: 8px; cursor: pointer; }
-        button.active { border-color: #00d4ff; color: #00d4ff; }
-        .card { background: #161b22; border: 1px solid #30363d; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        :root { --bg: #0d1117; --card: #161b22; --blue: #58a6ff; --green: #238636; --gray: #8b949e; }
+        body { background: var(--bg); color: #c9d1d9; font-family: -apple-system, sans-serif; margin: 0; padding: 15px; }
+        #last-update { font-size: 11px; color: var(--gray); text-align: right; margin-bottom: 10px; }
+        
+        nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-btn { 
+            background: #21262d; border: 1px solid #30363d; color: #c9d1d9; 
+            padding: 10px 18px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+            font-weight: 600; font-size: 13px;
+        }
+        .filter-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(56, 139, 253, 0.1); }
+        
+        .card { background: var(--card); border: 1px solid #30363d; border-radius: 10px; padding: 16px; margin-bottom: 15px; }
+        .status-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
+        h2 { font-size: 18px; margin: 0 0 8px 0; color: white; }
+        p { font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; color: #8b949e; }
+        .action-btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <div id="last-update" style="color: #8b949e; text-align: right; font-size: 0.8rem;">Łączenie...</div>
-    <nav>
-        <button id="btn-ALL" onclick="handleFilter('ALL')">ALL</button>
-        <button id="btn-DPE" onclick="handleFilter('DPE')">DPE</button>
-        <button id="btn-COMMERCE" onclick="handleFilter('COMMERCE')">COMMERCE</button>
-    </nav>
-    <div id="dashboard">Czekam na dane...</div>
 
-    <script src="app.js?v=2"></script>
+    <div id="last-update">POŁĄCZENIE...</div>
+
+    <nav id="main-nav">
+        <button class="filter-btn active" data-market="ALL">ALL</button>
+        <button class="filter-btn" data-market="DPE">DPE</button>
+        <button class="filter-btn" data-market="COMMERCE">COMMERCE</button>
+    </nav>
+
+    <div id="dashboard">Ładowanie raportu...</div>
+
+    <script src="app.js?v=final_fix"></script>
 </body>
 </html>
