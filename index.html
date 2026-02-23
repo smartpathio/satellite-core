@@ -1,116 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SATELLITE Intelligence Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>SATELLITE | Smart Market Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #a855f7;
+            --bg: #f3f4f6;
+        }
         body { 
-            background: #f8fafc; 
-            color: #334155; 
-            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg);
+            color: #1e293b;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
         }
-        .pastel-card { 
-            background: white; 
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .pastel-card:hover { 
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 45px 0 rgba(31, 38, 135, 0.12);
         }
-        .tag-dpe { background: #e0f2fe; color: #0369a1; }
-        .tag-commerce { background: #fef3c7; color: #92400e; }
-        .gradient-header { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .status-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Ukrywanie paska przewijania dla czystego wyglądu */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="min-h-screen pb-12">
 
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-slate-800 tracking-tight italic">SATELLITE <span class="text-indigo-600">CORE</span></h1>
-            <div class="flex items-center gap-4 text-xs font-semibold text-slate-500">
-                <span id="sync-status" class="flex items-center gap-1">
-                    <span class="h-2 w-2 bg-green-500 rounded-full"></span> LIVE SYNC
-                </span>
-                <span id="last-update" class="hidden md:inline">...</span>
+    <header class="w-full bg-white/80 sticky top-0 z-50 border-b border-slate-200 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex flex-col">
+                <h1 class="text-2xl font-800 tracking-tighter text-slate-900 leading-none">SATELLITE<span class="text-indigo-600">.CORE</span></h1>
+                <span id="last-update" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Synchronizacja...</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="h-3 w-3 bg-green-500 rounded-full status-pulse"></div>
+                <span class="text-xs font-bold text-slate-600 hidden sm:block">LIVE FEED ACTIVE</span>
             </div>
         </div>
     </header>
 
-    <nav class="max-w-7xl mx-auto px-4 py-6">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-            <button class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 whitespace-nowrap">Dashboard</button>
-            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl text-sm font-semibold hover:bg-slate-50 whitespace-nowrap">Market Signals</button>
-            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl text-sm font-semibold hover:bg-slate-50 whitespace-nowrap">DPE Map</button>
-            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl text-sm font-semibold hover:bg-slate-50 whitespace-nowrap">Logistics API</button>
-            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl text-sm font-semibold hover:bg-slate-50 whitespace-nowrap">Archives</button>
-            <button class="bg-white border border-slate-200 px-6 py-2 rounded-xl text-sm font-semibold hover:bg-slate-50 whitespace-nowrap text-indigo-600">+ Add Feed</button>
+    <nav class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex gap-3 overflow-x-auto no-scrollbar">
+            <button class="bg-indigo-600 text-white px-8 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95">Main Intelligence</button>
+            <button class="bg-white text-slate-600 px-8 py-3 rounded-2xl text-sm font-bold border border-slate-200 hover:bg-slate-50 transition-all active:scale-95">Archive</button>
+            <button class="bg-white text-slate-600 px-8 py-3 rounded-2xl text-sm font-bold border border-slate-200 hover:bg-slate-50 transition-all active:scale-95">Settings</button>
         </div>
     </nav>
 
-    <section class="max-w-7xl mx-auto px-4 mb-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="pastel-card p-4 rounded-2xl border-b-4 border-indigo-500">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">Total Insights</p>
-            <p class="text-2xl font-bold text-slate-800" id="stat-total">0</p>
+    <section class="max-w-7xl mx-auto px-6 mb-10 grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="glass-card p-6 rounded-[2rem]">
+            <p class="text-[10px] font-800 text-slate-400 uppercase tracking-widest">Wszystkie Sygnały</p>
+            <p class="text-3xl font-800 text-slate-900 mt-1" id="stat-total">0</p>
         </div>
-        <div class="pastel-card p-4 rounded-2xl border-b-4 border-emerald-500">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">High Tension</p>
-            <p class="text-2xl font-bold text-slate-800" id="stat-high">0</p>
+        <div class="glass-card p-6 rounded-[2rem] border-b-4 border-indigo-500">
+            <p class="text-[10px] font-800 text-slate-400 uppercase tracking-widest">Alerty Napięcia</p>
+            <p class="text-3xl font-800 text-indigo-600 mt-1" id="stat-high">0</p>
         </div>
-        <div class="pastel-card p-4 rounded-2xl border-b-4 border-amber-500">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">Active Scanners</p>
-            <p class="text-2xl font-bold text-slate-800">14</p>
+        <div class="glass-card p-6 rounded-[2rem]">
+            <p class="text-[10px] font-800 text-slate-400 uppercase tracking-widest">Skanery Aktywne</p>
+            <p class="text-3xl font-800 text-slate-900 mt-1">100%</p>
         </div>
-        <div class="pastel-card p-4 rounded-2xl border-b-4 border-slate-300">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">Server Status</p>
-            <p class="text-2xl font-bold text-slate-800">Optimal</p>
+        <div class="glass-card p-6 rounded-[2rem]">
+            <p class="text-[10px] font-800 text-slate-400 uppercase tracking-widest">Region</p>
+            <p class="text-3xl font-800 text-slate-900 mt-1 uppercase">EU</p>
         </div>
     </section>
 
-    <main id="intelligence-grid" class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-        </main>
+    <main id="intelligence-grid" class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="col-span-full text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent"></div>
+            <p class="mt-4 text-slate-500 font-semibold italic">Analizowanie głębokich sygnałów rynkowych...</p>
+        </div>
+    </main>
 
     <script>
-        async function loadData() {
+        async function loadIntelligence() {
             try {
-                const response = await fetch('data.json?v=' + Date.now());
+                // POPRAWKA: Pobieramy teraz satellite_report.json
+                const response = await fetch('satellite_report.json?v=' + Date.now());
+                if (!response.ok) throw new Error('Brak pliku raportu');
+                
                 const data = await response.json();
                 
-                document.getElementById('last-update').innerText = `Last update: ${data.last_update}`;
+                // Aktualizacja statystyk
+                document.getElementById('last-update').innerText = `OSTATNI SYGNAŁ: ${data.last_update}`;
                 document.getElementById('stat-total').innerText = data.deep_analysis.length;
                 document.getElementById('stat-high').innerText = data.deep_analysis.filter(i => i.decision === 'YES').length;
 
                 const grid = document.getElementById('intelligence-grid');
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // Czyścimy loader
 
-                data.deep_analysis.forEach(item => {
-                    const tagClass = item.market === 'DPE' ? 'tag-dpe' : 'tag-commerce';
+                data.deep_analysis.forEach((item, index) => {
                     const card = document.createElement('div');
-                    card.className = "pastel-card p-6 rounded-3xl flex flex-col h-full";
+                    card.className = `glass-card p-8 rounded-[2.5rem] flex flex-col h-full fade-in`;
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    
+                    const tensionColor = item.decision === 'YES' ? 'text-red-500' : 'text-emerald-500';
+                    const tagColor = item.market === 'AUTO-SCAN' ? 'bg-indigo-100 text-indigo-700' : 'bg-amber-100 text-amber-700';
+
                     card.innerHTML = `
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${tagClass}">${item.market}</span>
-                            <span class="text-[10px] font-bold ${item.decision === 'YES' ? 'text-emerald-600' : 'text-slate-400'}">● ${item.decision}</span>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="px-4 py-1.5 rounded-xl text-[10px] font-800 uppercase tracking-tighter ${tagColor}">${item.market}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full ${item.decision === 'YES' ? 'bg-red-500' : 'bg-emerald-500'}"></span>
+                                <span class="text-[10px] font-800 ${tensionColor} uppercase tracking-widest">${item.decision}</span>
+                            </div>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-800 mb-2 leading-tight">${item.niche_or_area}</h3>
-                        <p class="text-sm text-slate-500 mb-6 flex-grow">${item.reason_short}</p>
-                        <div class="mt-auto pt-4 border-t border-slate-100">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Intuition Engine Signal</p>
-                            <p class="text-xs font-medium text-indigo-600 italic">"${item.intuition_signal}"</p>
+                        <h3 class="text-xl font-800 text-slate-800 mb-4 leading-tight">${item.niche_or_area}</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-8 flex-grow">${item.reason_short}</p>
+                        <div class="pt-6 border-t border-slate-100">
+                            <p class="text-[9px] font-800 text-slate-400 uppercase tracking-[0.2em] mb-2">Intuition Logic</p>
+                            <p class="text-xs font-600 text-slate-700 italic">"${item.intuition_signal}"</p>
                         </div>
                     `;
                     grid.appendChild(card);
                 });
             } catch (error) {
-                console.error("Sync Error:", error);
-                document.getElementById('intelligence-grid').innerHTML = "<p class='col-span-full text-center py-20 text-slate-400'>Loading signals...</p>";
+                console.error("Critical Sync Error:", error);
+                document.getElementById('intelligence-grid').innerHTML = `
+                    <div class="col-span-full p-12 glass-card rounded-[2rem] border-red-200 text-center">
+                        <p class="text-red-500 font-800 text-xl">CRITICAL SYNC ERROR</p>
+                        <p class="text-slate-500 mt-2">Dashboard nie widzi pliku satellite_report.json w repozytorium.</p>
+                        <button onclick="location.reload()" class="mt-6 bg-slate-900 text-white px-6 py-2 rounded-xl font-bold">RETRY SYNC</button>
+                    </div>`;
             }
         }
-        loadData();
+
+        // Odpalenie po załadowaniu strony
+        window.addEventListener('DOMContentLoaded', loadIntelligence);
     </script>
 </body>
 </html>
