@@ -1,45 +1,12 @@
-import json
-import datetime
-import os
-import platform
-
-class IntuitionEngine:
-    """Digital Body Language Module - Analyzes market tension."""
-    @staticmethod
-    def analyze_tension(market_type):
-        tensions = {
-            "DPE": {"level": "HIGH", "signal": "Digital Ghosting detected in competitors"},
-            "COMMERCE": {"level": "MEDIUM", "signal": "Rapid Tempo of new inquiries"}
-        }
-        return tensions.get(market_type, {"level": "LOW", "signal": "Stable market"})
-
-def save_report(data):
-    # 1. Primary save for GitHub/Web
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-    
-    # 2. Secondary save for Local 'Downloads' folder
-    if platform.system() == "Windows":
-        downloads_path = os.path.join(os.environ['USERPROFILE'], 'Downloads', 'satellite_report.json')
-        try:
-            with open(downloads_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
-            print(f"--- Local copy saved to: {downloads_path} ---")
-        except Exception as e:
-            print(f"--- Could not save to Downloads: {e} ---")
-
 def generate_report():
+    # Extended intelligence signals for a "beefy" report
     raw_data = [
-        {
-            "area": "DPE Logistics - Last Mile",
-            "market": "DPE",
-            "reason": "Scandinavian universities report 15% gap in winter route optimization."
-        },
-        {
-            "area": "Eco-Commerce Packaging",
-            "market": "COMMERCE",
-            "reason": "Sudden surge in negative sentiment regarding plastic in deliveries (Digital Body Language: High Frustration)."
-        }
+        {"area": "DPE Logistics - Last Mile", "market": "DPE", "reason": "Scandinavian universities report 15% gap in winter route optimization."},
+        {"area": "Eco-Commerce Packaging", "market": "COMMERCE", "reason": "Sudden surge in plastic frustration in Denmark/Malmö region."},
+        {"area": "Autonomous Drone Corridors", "market": "DPE", "reason": "New flight corridors opening in Stockholm for Q3 2026 delivery tests."},
+        {"area": "Micro-Fulfillment Hubs", "market": "COMMERCE", "reason": "Real estate shift: Vacant retail space in Oslo being converted to dark stores."},
+        {"area": "Cold Chain Battery Tech", "market": "DPE", "reason": "Norwegian fleets reporting 30% battery drop in -20C; gap for thermal tech."},
+        {"area": "Circular Return Economy", "market": "COMMERCE", "reason": "Finland testing mandatory deposit system for reusable e-commerce boxes."}
     ]
 
     processed_analysis = []
@@ -49,7 +16,7 @@ def generate_report():
         processed_analysis.append({
             "niche_or_area": item['area'],
             "market": item['market'],
-            "confidence": 0.85 if tension['level'] == "HIGH" else 0.70,
+            "confidence": 0.88 if tension['level'] == "HIGH" else 0.75,
             "decision": "YES" if tension['level'] == "HIGH" else "WATCH",
             "reason_short": item['reason'],
             "intuition_signal": tension['signal']
@@ -61,7 +28,4 @@ def generate_report():
     }
 
     save_report(final_report)
-    print(f"--- Report generated successfully: {final_report['last_update']} ---")
-
-if __name__ == "__main__":
-    generate_report()
+    print(f"--- High-density report generated: {final_report['last_update']} ---")
