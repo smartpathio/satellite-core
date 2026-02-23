@@ -45,24 +45,33 @@ def generate_html_report(data):
     <html lang="pl">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>SATELLITE INTEL</title>
+        
+        <link rel="icon" type="image/png" href="icon.png">
+        <link rel="apple-touch-icon" href="icon.png">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Satellite">
+
         <style>
-            body {{ font-family: sans-serif; background: #0f172a; color: white; padding: 15px; margin: 0; }}
-            .card {{ background: #1e293b; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }}
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: white; padding: 15px; margin: 0; }}
+            .card {{ background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border-left: 6px solid #3b82f6; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }}
             .🔥 {{ border-left-color: #ef4444; }}
             .💎 {{ border-left-color: #10b981; }}
-            .header {{ text-align: center; padding: 20px 0; border-bottom: 2px solid #334155; margin-bottom: 20px; }}
-            .label {{ font-weight: bold; font-size: 0.75em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }}
-            .action {{ background: #0ea5e9; color: white; padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 0.85em; font-weight: bold; border: 1px solid #38bdf8; }}
-            h2 {{ font-size: 1.1em; color: #f8fafc; margin: 8px 0; line-height: 1.3; }}
-            p {{ margin: 5px 0; line-height: 1.4; }}
+            .header {{ text-align: center; padding: 25px 0; border-bottom: 2px solid #334155; margin-bottom: 25px; }}
+            .label {{ font-weight: 800; font-size: 0.7em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; }}
+            .action {{ background: #0ea5e9; color: white; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 0.85em; font-weight: bold; border: 1px solid #38bdf8; }}
+            h2 {{ font-size: 1.2em; color: #f8fafc; margin: 10px 0; line-height: 1.3; font-weight: 700; }}
+            p {{ margin: 6px 0; line-height: 1.5; color: #e2e8f0; }}
+            .footer {{ text-align: center; font-size: 0.7em; color: #475569; margin-top: 30px; padding-bottom: 20px; }}
         </style>
     </head>
     <body>
         <div class="header">
-            <h1 style="margin:0;">🛰️ SATELLITE INTEL</h1>
-            <p style="color: #94a3b8; font-size: 0.9em;">Raport Wywiadu: {data['last_update']}</p>
+            <h1 style="margin:0; font-size: 1.8em; letter-spacing: -1px;">🛰️ SATELLITE INTEL</h1>
+            <p style="color: #94a3b8; font-size: 0.9em; margin-top: 5px;">Raport Operacyjny: {data['last_update']}</p>
         </div>
     """
     for item in data['deep_analysis']:
@@ -71,18 +80,22 @@ def generate_html_report(data):
         <div class="card {icon_class}">
             <div class="label">{item['decision']} | {item['market']}</div>
             <h2>{item['niche_or_area']}</h2>
-            <p style="font-size: 0.85em; color: #cbd5e1; font-style: italic;">{item['reason_short']}...</p>
-            <p style="margin-top:10px;"><strong>🎯 ANALIZA:</strong> {item['intuition_signal'].split('|')[0]}</p>
+            <p style="font-size: 0.85em; color: #94a3b8; font-style: italic; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px;">{item['reason_short']}...</p>
+            <p><strong>🎯 ANALIZA:</strong> {item['intuition_signal'].split('|')[0]}</p>
             <div class="action">💡 REKOMENDACJA: {item['intuition_signal'].split('|')[1]}</div>
         </div>
         """
     if not data['deep_analysis']:
-        html_template += "<p style='text-align:center;'>Brak istotnych sygnałów w tej sesji.</p>"
-    html_template += "</body></html>"
+        html_template += "<p style='text-align:center; color: #64748b;'>Brak sygnałów wysokiego priorytetu w tej sesji.</p>"
+    
+    html_template += """
+        <div class="footer">SYSTEM SATELLITE-CORE v2.1 | USA-UK-PL-NOR</div>
+    </body></html>
+    """
     return html_template
 
 def generate_report():
-    print("--- 🛰️ SATELLITE-CORE: WYWIAD AGRESYWNY USA/UK... ---")
+    print("--- 🛰️ SATELLITE-CORE: URUCHAMIANIE WYWIADU AGRESYWNEGO... ---")
     feeds = [
         "https://www.retaildive.com/feeds/news/",
         "https://techcrunch.com/feed/",
@@ -119,7 +132,7 @@ def generate_report():
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(generate_html_report(report_data))
 
-    print(f"--- 🏁 GOTOWE. Raport HTML wygenerowany. ---")
+    print(f"--- 🏁 GOTOWE. Raport HTML z ikoną wygenerowany poprawnie. ---")
 
 if __name__ == "__main__":
     generate_report()
