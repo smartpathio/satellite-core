@@ -19,7 +19,6 @@ class IntelAnalyst:
         is_kdp_gem = any(word in text for word in kdp_logic)
         is_local = any(word in text for word in local_market)
 
-        # --- LOGIKA ANALITYCZNA (AGRESYWNA) ---
         if is_usa_viral:
             return {
                 "level": "🔥 USA VIRAL",
@@ -38,11 +37,9 @@ class IntelAnalyst:
                 "impact": "Istotne zmiany logistyczne lub rynkowe w Polsce/Skandynawii.",
                 "action": "Dostosuj łańcuch dostaw lub komunikację marketingową pod region."
             }
-            
         return None
 
 def generate_html_report(data):
-    # Generowanie ładnego widoku na telefon
     html_template = f"""
     <!DOCTYPE html>
     <html lang="pl">
@@ -51,43 +48,47 @@ def generate_html_report(data):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SATELLITE INTEL</title>
         <style>
-            body {{ font-family: sans-serif; background: #0f172a; color: white; padding: 15px; }}
-            .card {{ background: #1e293b; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #3b82f6; }}
+            body {{ font-family: sans-serif; background: #0f172a; color: white; padding: 15px; margin: 0; }}
+            .card {{ background: #1e293b; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }}
             .🔥 {{ border-left-color: #ef4444; }}
             .💎 {{ border-left-color: #10b981; }}
-            .header {{ text-align: center; border-bottom: 2px solid #334155; padding-bottom: 10px; margin-bottom: 20px; }}
-            .label {{ font-weight: bold; font-size: 0.8em; color: #94a3b8; }}
-            .action {{ background: #0ea5e9; color: white; padding: 8px; border-radius: 5px; margin-top: 10px; font-size: 0.9em; }}
-            h2 {{ font-size: 1.1em; color: #f8fafc; margin: 0 0 10px 0; }}
+            .header {{ text-align: center; padding: 20px 0; border-bottom: 2px solid #334155; margin-bottom: 20px; }}
+            .label {{ font-weight: bold; font-size: 0.75em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }}
+            .action {{ background: #0ea5e9; color: white; padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 0.85em; font-weight: bold; border: 1px solid #38bdf8; }}
+            h2 {{ font-size: 1.1em; color: #f8fafc; margin: 8px 0; line-height: 1.3; }}
+            p {{ margin: 5px 0; line-height: 1.4; }}
         </style>
     </head>
     <body>
         <div class="header">
-            <h1>🛰️ SATELLITE INTEL</h1>
-            <p>Aktualizacja: {data['last_update']}</p>
+            <h1 style="margin:0;">🛰️ SATELLITE INTEL</h1>
+            <p style="color: #94a3b8; font-size: 0.9em;">Raport Wywiadu: {data['last_update']}</p>
         </div>
     """
     for item in data['deep_analysis']:
-        icon = "🔥" if "USA" in item['decision'] else ("💎" if "KDP" in item['decision'] else "⚠️")
+        icon_class = "🔥" if "USA" in item['decision'] else ("💎" if "KDP" in item['decision'] else "⚠️")
         html_template += f"""
-        <div class="card {icon}">
+        <div class="card {icon_class}">
             <div class="label">{item['decision']} | {item['market']}</div>
             <h2>{item['niche_or_area']}</h2>
-            <p style="font-size: 0.9em; color: #cbd5e1;">{item['reason_short']}</p>
-            <p><strong>WNIOSEK:</strong> {item['intuition_signal'].split('|')[0]}</p>
-            <div class="action">🚀 {item['intuition_signal'].split('|')[1]}</div>
+            <p style="font-size: 0.85em; color: #cbd5e1; font-style: italic;">{item['reason_short']}...</p>
+            <p style="margin-top:10px;"><strong>🎯 ANALIZA:</strong> {item['intuition_signal'].split('|')[0]}</p>
+            <div class="action">💡 REKOMENDACJA: {item['intuition_signal'].split('|')[1]}</div>
         </div>
         """
+    if not data['deep_analysis']:
+        html_template += "<p style='text-align:center;'>Brak istotnych sygnałów w tej sesji.</p>"
     html_template += "</body></html>"
     return html_template
 
 def generate_report():
-    print("--- 🛰️  SATELLITE-CORE: WYWIAD AGRESYWNY USA/UK... ---")
+    print("--- 🛰️ SATELLITE-CORE: WYWIAD AGRESYWNY USA/UK... ---")
     feeds = [
         "https://www.retaildive.com/feeds/news/",
         "https://techcrunch.com/feed/",
         "https://ecommercenews.eu/feed/",
-        "https://arcticstartup.com/feed/"
+        "https://arcticstartup.com/feed/",
+        "https://www.theverge.com/rss/index.xml"
     ]
 
     processed = []
@@ -96,11 +97,10 @@ def generate_report():
         for entry in feed.entries[:15]:
             summary = re.sub('<.*?>', '', entry.get('summary', ''))[:250]
             analysis = IntelAnalyst.analyze_opportunity(entry.title, summary)
-            
             if analysis:
                 processed.append({
                     "niche_or_area": entry.title.upper(),
-                    "market": "INTEL-REPORT",
+                    "market": "INTEL-OPERATIONS",
                     "decision": analysis['level'],
                     "reason_short": summary,
                     "intuition_signal": f"{analysis['impact']} | {analysis['action']}"
@@ -108,16 +108,14 @@ def generate_report():
 
     processed.sort(key=lambda x: ("USA" in x['decision'], "KDP" in x['decision']), reverse=True)
     
-    report_data = {{
+    report_data = {
         "last_update": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         "deep_analysis": processed
-    }}
+    }
 
-    # Zapis JSON (dla systemu)
     with open('satellite_report.json', 'w', encoding='utf-8') as f:
         json.dump(report_data, f, indent=4, ensure_ascii=False)
 
-    # Zapis HTML (Twój Dashboard na telefon)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(generate_html_report(report_data))
 
