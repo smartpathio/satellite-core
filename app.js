@@ -1,72 +1,41 @@
-let satelliteData = [];
-
-// 1. Pobieranie danych
-async function fetchSystemData() {
+async function fetchIntelligence() {
     try {
-        const response = await fetch('data.json?cache=' + Date.now());
-        const json = await response.json();
+        const response = await fetch('satellite_report.json?v=' + Date.now());
+        const data = await response.json();
         
-        // Wyciągamy dane z deep_analysis
-        satelliteData = json.deep_analysis || [];
-        
-        renderCards(satelliteData);
-        document.getElementById('last-update').innerText = 'SATELLITE LIVE | ' + new Date().toLocaleTimeString();
-    } catch (err) {
-        console.error("Błąd systemu:", err);
-        document.getElementById('dashboard').innerHTML = "Błąd synchronizacji. Sprawdź VPN.";
+        document.getElementById('last-update').innerText = `UPDATED: ${data.last_update}`;
+        const grid = document.getElementById('intelligence-grid');
+        grid.innerHTML = '';
+
+        data.deep_analysis.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'glass-card';
+            
+            const shareText = `MARKET ALERT: ${item.niche_or_area}\n\nDetails: ${item.reason_short}\n\nSignal: ${item.intuition_signal}`;
+            
+            card.innerHTML = `
+                <span class="card-tag">${item.market}</span>
+                <h3 style="margin: 20px 0 10px 0; font-weight: 800;">${item.niche_or_area}</h3>
+                <p style="font-size: 13px; color: #64748b; line-height: 1.6; flex-grow: 1;">${item.reason_short}</p>
+                <div style="border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 15px;">
+                    <p style="font-size: 11px; font-weight: 700; color: #475569 italic;">"${item.intuition_signal}"</p>
+                </div>
+                <button class="share-btn" onclick="dispatchSignal('${encodeURIComponent(shareText)}')">SEND TO MAIL / MSG</button>
+            `;
+            grid.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Fetch Error:", error);
     }
 }
 
-// 2. Renderowanie kart
-function renderCards(data) {
-    const container = document.getElementById('dashboard');
-    container.innerHTML = '';
-
-    if (data.length === 0) {
-        container.innerHTML = '<div class="card">Brak danych w raporcie.</div>';
-        return;
+function dispatchSignal(encodedMsg) {
+    const text = decodeURIComponent(encodedMsg);
+    if (navigator.share) {
+        navigator.share({ title: 'Satellite Signal', text: text });
+    } else {
+        window.location.href = `mailto:?subject=Market Intelligence Alert&body=${encodedMsg}`;
     }
-
-    data.forEach(item => {
-        const score = item.confidence ? Math.round(item.confidence * 100) : 0;
-        const decision = (item.decision || 'WATCH').toUpperCase();
-        const color = score > 70 ? '#3fb950' : '#f85149';
-
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="status-tag" style="color: ${color}">${score}% CONFIDENCE</div>
-            <h2>${item.niche_or_area || 'Analiza'}</h2>
-            <p>${item.reason_short || 'Przetwarzanie danych rynkowych...'}</p>
-            <button class="action-btn" style="background: ${decision === 'YES' || decision === 'BUY' ? '#238636' : '#30363d'}">
-                ACTION: ${decision}
-            </button>
-        `;
-        container.appendChild(card);
-    });
 }
 
-// 3. Obsługa filtrów (BEZPIECZNA - omija Kaspersky)
-document.addEventListener('click', function(e) {
-    // Sprawdzamy czy kliknięty element to przycisk filtra
-    if (e.target.classList.contains('filter-btn')) {
-        const market = e.target.getAttribute('data-market');
-
-        // Zmiana aktywnego przycisku
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-
-        // Filtrowanie danych
-        if (market === 'ALL') {
-            renderCards(satelliteData);
-        } else {
-            const filtered = satelliteData.filter(i => 
-                (i.domain || i.market || '').toUpperCase().includes(market)
-            );
-            renderCards(filtered);
-        }
-    }
-});
-
-// Start
-fetchSystemData();
+window.addEventListener('DOMContentLoaded', fetchIntelligence);
