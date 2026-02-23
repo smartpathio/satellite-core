@@ -2,35 +2,35 @@ name: Daily Satellite Report
 
 on:
   schedule:
-    - cron: '0 7 * * *' # 8:00 rano czasu polskiego
-  workflow_dispatch: # Twój ręczny przycisk "Run"
+    - cron: '0 3 * * *' # Runs at 04:00 AM Polish time (03:00 UTC)
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Daje botowi prawo do aktualizacji raportu na Twoim GitHubie
+      contents: write
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install required libraries
         run: |
           python -m pip install --upgrade pip
           pip install requests python-dotenv
 
-      - name: Run Analysis Engine
-        run: python generator.py
+      - name: Execute Spy Engine
+        run: python spy_engine.py
 
-      - name: Commit and Push changes
+      - name: Sync results to repository
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data.json
-          git commit -m "Automatyczna aktualizacja raportu: $(date)" || echo "Brak zmian w danych"
+          git commit -m "Automated update: $(date)" || echo "No changes detected"
           git push

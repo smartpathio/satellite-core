@@ -1,42 +1,80 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Core</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SATELLITE | Market Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --blue: #58a6ff; --green: #238636; --gray: #8b949e; }
-        body { background: var(--bg); color: #c9d1d9; font-family: -apple-system, sans-serif; margin: 0; padding: 15px; }
-        #last-update { font-size: 11px; color: var(--gray); text-align: right; margin-bottom: 10px; }
-        
-        nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-btn { 
-            background: #21262d; border: 1px solid #30363d; color: #c9d1d9; 
-            padding: 10px 18px; border-radius: 6px; cursor: pointer; white-space: nowrap;
-            font-weight: 600; font-size: 13px;
-        }
-        .filter-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(56, 139, 253, 0.1); }
-        
-        .card { background: var(--card); border: 1px solid #30363d; border-radius: 10px; padding: 16px; margin-bottom: 15px; }
-        .status-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
-        h2 { font-size: 18px; margin: 0 0 8px 0; color: white; }
-        p { font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; color: #8b949e; }
-        .action-btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; text-transform: uppercase; }
+        body { background: #050a15; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .status-glow { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+        .card-tension-high { border-left: 4px solid #ef4444; }
+        .card-tension-medium { border-left: 4px solid #f59e0b; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+    <header class="max-w-6xl mx-auto mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tighter text-white">SATELLITE <span class="text-blue-500">CORE</span></h1>
+            <p id="last-update" class="text-xs text-slate-500 uppercase tracking-widest">Awaiting synchronization...</p>
+        </div>
+        <div class="h-3 w-3 bg-green-500 rounded-full status-glow"></div>
+    </header>
 
-    <div id="last-update">POŁĄCZENIE...</div>
-
-    <nav id="main-nav">
-        <button class="filter-btn active" data-market="ALL">ALL</button>
-        <button class="filter-btn" data-market="DPE">DPE</button>
-        <button class="filter-btn" data-market="COMMERCE">COMMERCE</button>
+    <nav class="max-w-6xl mx-auto mb-8 flex gap-2 overflow-x-auto pb-2">
+        <button class="glass px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-600 transition">ALL SIGNALS</button>
+        <button class="glass px-4 py-2 rounded-full text-sm font-medium opacity-50">DPE</button>
+        <button class="glass px-4 py-2 rounded-full text-sm font-medium opacity-50">COMMERCE</button>
     </nav>
 
-    <div id="dashboard">Ładowanie raportu...</div>
+    <main id="intelligence-grid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full py-20 text-center text-slate-500">
+            <p class="animate-pulse">Scanning deep web for signals...</p>
+        </div>
+    </main>
 
-    <script src="app.js?v=final_fix"></script>
+    <script>
+        async function loadIntelligence() {
+            try {
+                // Fetching the JSON with a cache-buster to avoid "pusty dashboard"
+                const response = await fetch('data.json?v=' + str(Date.now()));
+                const data = await response.json();
+                
+                document.getElementById('last-update').innerText = `Last Signal: ${data.last_update}`;
+                const grid = document.getElementById('intelligence-grid');
+                grid.innerHTML = ''; // Clear loader
+
+                data.deep_analysis.forEach(item => {
+                    const card = document.createElement('div');
+                    const tensionClass = item.confidence > 0.8 ? 'card-tension-high' : 'card-tension-medium';
+                    
+                    card.className = `glass p-6 rounded-2xl ${tensionClass} hover:scale-[1.02] transition-transform duration-300`;
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-1 rounded uppercase font-bold">${item.market}</span>
+                            <span class="text-xs font-mono ${item.decision === 'YES' ? 'text-green-400' : 'text-yellow-400'}">● ${item.decision}</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-white">${item.niche_or_area}</h3>
+                        <p class="text-sm text-slate-400 mb-4 leading-relaxed">${item.reason_short}</p>
+                        <div class="pt-4 border-t border-white/5">
+                            <p class="text-[10px] text-slate-500 uppercase mb-1 font-semibold tracking-wide text-white">Intuition Signal</p>
+                            <p class="text-xs italic text-blue-300">"${item.intuition_signal}"</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Data sync failed:', error);
+                document.getElementById('intelligence-grid').innerHTML = `
+                    <div class="col-span-full p-8 glass border-red-500/50 text-center">
+                        <p class="text-red-400 font-bold">CRITICAL SYNC ERROR</p>
+                        <p class="text-xs text-slate-500">Check if data.json exists in your repository.</p>
+                    </div>`;
+            }
+        }
+
+        loadIntelligence();
+    </script>
 </body>
 </html>
