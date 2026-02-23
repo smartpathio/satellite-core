@@ -1,81 +1,68 @@
-import json
-import datetime
-import os
-import platform
-import feedparser
+import json, datetime, os, platform, feedparser, re
 
 class IntuitionEngine:
     @staticmethod
     def analyze_tension(text):
-        high_tension_words = ['delay', 'strike', 'crisis', 'increase', 'problem', 'failure', 'surge', 'trouble']
+        # Rozszerzona lista słów alarmowych
+        alert_words = ['strike', 'crisis', 'increase', 'problem', 'failure', 'surge', 'delay', 'customs', 'rules', 'new laws']
         text_lower = text.lower()
-        if any(word in text_lower for word in high_tension_words):
-            return {"level": "HIGH", "signal": "Disruption Alert: Volatility detected in this sector."}
+        if any(word in text_lower for word in alert_words):
+            return {"level": "HIGH", "signal": "Disruption Alert: Significant market shift detected."}
         return {"level": "LOW", "signal": "Stable flow: Standard market movement."}
 
-def save_report(data):
-    # 1. Save for GitHub/Web
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-    print("✅ File data.json saved.")
-    
-    # 2. Local backup for Windows
-    if platform.system() == "Windows":
-        downloads_path = os.path.join(os.environ['USERPROFILE'], 'Downloads', 'satellite_report.json')
-        try:
-            with open(downloads_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
-            print(f"✅ Backup saved to Downloads: {downloads_path}")
-        except Exception as e:
-            print(f"❌ Backup failed: {e}")
+def clean_html(raw_html):
+    # Czyścimy opisy ze śmieci HTML, żeby kafelki były estetyczne
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return cleantext[:180] # Limit znaków dla estetyki
 
 def generate_report():
-    print("--- 🛰️  Starting deep market scan... ---")
+    print("--- 🛰️  TURBO SCAN INITIALIZED... ---")
     
+    # Rozszerzona lista solidnych źródeł
     feeds = [
         "https://ecommercenews.eu/feed/",
         "https://www.logisticsmanager.com/feed/",
-        "https://www.scandinaviantraveler.com/en/feed"
+        "https://www.shippingandfreightresource.com/feed/", # Mocny portal logistyczny
+        "https://arcticstartup.com/feed/" # Najlepsze źródło o skandynawskich startupach
     ]
 
     processed_analysis = []
     
     for url in feeds:
-        print(f"🔍 Accessing: {url} ...")
+        print(f"🔍 Deep Scanning: {url}")
         feed = feedparser.parse(url)
         
-        if not feed.entries:
-            print(f"⚠️ No entries found for {url}")
-            continue
-
-        print(f"📈 Found {len(feed.entries)} news. Processing top 3...")
-        for entry in feed.entries[:3]:
+        # Bierzemy po 5 newsów dla "gęstszego" dashboardu
+        for entry in feed.entries[:5]:
             tension = IntuitionEngine.analyze_tension(entry.title)
-            
-            # Pobieramy opis (summary), jeśli istnieje
-            summary = entry.get('summary', 'No description available')
+            summary = clean_html(entry.get('summary', 'No details.'))
             
             processed_analysis.append({
                 "niche_or_area": entry.title,
-                "market": "AUTO-SCAN",
-                "confidence": 0.85 if tension['level'] == "HIGH" else 0.70,
+                "market": "SATELLITE-SCAN",
+                "confidence": 0.88 if tension['level'] == "HIGH" else 0.75,
                 "decision": "YES" if tension['level'] == "HIGH" else "WATCH",
-                "reason_short": summary[:150] + "...",
+                "reason_short": summary + "...",
                 "intuition_signal": tension['signal']
             })
-
-    if not processed_analysis:
-        print("❌ CRITICAL: No data collected from any feed!")
-        return
 
     final_report = {
         "last_update": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         "deep_analysis": processed_analysis
     }
 
-    save_report(final_report)
-    print(f"--- 🏁 Report Ready: {len(processed_analysis)} signals gathered ---")
+    # Zapis
+    with open('satellite_report.json', 'w', encoding='utf-8') as f:
+        json.dump(final_report, f, indent=4, ensure_ascii=False)
+    
+    # Backup Windows
+    if platform.system() == "Windows":
+        path = os.path.join(os.environ['USERPROFILE'], 'Downloads', 'satellite_report.json')
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(final_report, f, indent=4, ensure_ascii=False)
 
-# TO JEST KLUCZOWE - bez tego skrypt się nie odpali!
+    print(f"--- 🏁 Turbo Report Ready: {len(processed_analysis)} intelligence signals! ---")
+
 if __name__ == "__main__":
     generate_report()
