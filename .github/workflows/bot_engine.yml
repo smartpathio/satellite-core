@@ -2,7 +2,7 @@ name: Daily Satellite Report
 
 on:
   schedule:
-    - cron: '0 3 * * *' # Runs at 04:00 AM Polish time (03:00 UTC)
+    - cron: '0 7 * * *' # Runs at 08:00 AM Polish time (07:00 UTC)
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
 jobs:
@@ -24,13 +24,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv
 
-      - name: Execute Spy Engine
-        run: python spy_engine.py
+      - name: Execute Master Engine
+        run: python app_master_engine.py
 
       - name: Sync results to repository
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add data.json
+          git add .
           git commit -m "Automated update: $(date)" || echo "No changes detected"
           git push

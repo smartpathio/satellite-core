@@ -1,187 +1,181 @@
 import os
-import json
+import sys
+import io
 from datetime import datetime
 
-# --- SETTINGS [cite: 2026-02-08] ---
-OUTPUT_PATH = os.path.join(os.path.expanduser("~"), "Downloads", "Master_Satellite_Report.html")
-REPORT_DATE = datetime.now().strftime("%Y-%m-%d")
+# Importing your army of bots (ensure these files are in the same folder)
+from compliance_logic import IPNCompliance
+from safety_sentinel import SafetySentinel
+from accommodation_scout import AccommodationScout
+from heavy_gear_intel import HeavyGearIntel
+from ecom_trend_analyst import EcomTrendAnalyst
+
+# Fixing encoding for environments to handle emojis and special characters
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 class MasterEngine:
     def __init__(self):
-        self.timestamp = datetime.now().strftime("%H:%M:%S")
-        self.hubs = {
-            "Poland": ["Małaszewicze", "Gdynia", "Gdańsk", "Gliwice", "Kąty Wrocławskie", "Łódź-Olejów", "Pruszków"],
-            "Norway": ["Oslo", "Drammen", "Moss", "Stavanger", "Bergen", "Narvik", "Kristiansand"],
-            "Sweden": ["Gothenburg", "Helsingborg", "Trelleborg", "Jönköping", "Malmö"]
-        }
-
-    def generate_report(self):
-        print(f"[{self.timestamp}] 🚀 Starting Deep Scan Engine...")
+        self.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         
-        html_template = f"""
+        # SMART PATH LOGIC:
+        # Detects if running on GitHub Actions server or local machine
+        if os.environ.get('GITHUB_ACTIONS'):
+            # Path for GitHub environment
+            self.output_path = "Satellite_Master_Report.html"
+        else:
+            # Path for your local laptop (Downloads folder)
+            self.output_path = os.path.join(os.path.expanduser("~"), "Downloads", "Satellite_Master_Report.html")
+        
+        # Bot Initialization
+        self.finance = IPNCompliance()
+        self.safety = SafetySentinel()
+        self.housing = AccommodationScout()
+        self.gear = HeavyGearIntel()
+        self.ecom = EcomTrendAnalyst()
+
+    def generate_html_report(self, results):
+        """
+        Generates the final responsive HTML report with PL/EN toggles.
+        """
+        html_content = f"""
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>INDUSTRIAL MASTER DASHBOARD - 2026</title>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <title>SATELLITE INTELLIGENCE v7.0</title>
             <style>
-                :root {{
-                    --primary: #002f6c; --secondary: #0056b3; --accent: #ff9800;
-                    --entry: #2e7d32; --pro: #c62828; --bg: #f4f7f6;
-                }}
-                body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }}
-                
-                /* HEADER & NAVIGATION */
-                header {{ background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--accent); }}
-                .nav-tabs {{ display: flex; justify-content: center; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }}
-                .tab-link {{ padding: 15px 25px; cursor: pointer; font-weight: bold; border: none; background: none; transition: 0.3s; border-bottom: 3px solid transparent; }}
-                .tab-link.active {{ border-bottom: 3px solid var(--accent); color: var(--accent); }}
-                
-                /* DASHBOARD LAYOUT [cite: 2026-02-03] */
-                .container {{ max-width: 1400px; margin: 20px auto; padding: 10px; }}
-                .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }}
-                
-                .card {{ background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 4px solid var(--secondary); }}
-                .card.entry-card {{ border-top-color: var(--entry); }}
-                .card.pro-card {{ border-top-color: var(--pro); }}
-
-                .badge {{ padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; }}
-                .badge-entry {{ background: #e8f5e9; color: var(--entry); }}
-                .badge-pro {{ background: #ffebee; color: var(--pro); }}
-
-                /* SPECIFIC ANALYSIS SECTIONS */
-                .hub-list {{ list-style: none; padding: 0; }}
-                .hub-list li {{ padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }}
-                .hub-list li span {{ color: var(--accent); font-weight: bold; }}
-
-                .comparison-table {{ width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }}
-                .comparison-table th, .comparison-table td {{ padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }}
-                .comparison-table th {{ background: #f8f9fa; }}
-
-                .housing-box {{ background: #fff3e0; border-radius: 5px; padding: 15px; margin-top: 15px; border-left: 5px solid var(--accent); }}
-                
-                .tab-content {{ display: none; }}
-                .tab-content.active {{ display: block; animation: fadeIn 0.5s; }}
-
-                @keyframes fadeIn {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
-                
-                @media (max-width: 768px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+                :root {{ --bg: #050505; --card: #111111; --accent: #2563eb; --text: #e2e8f0; --safe: #10b981; --danger: #ef4444; --purple: #a855f7; --gold: #eab308; }}
+                body {{ font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }}
+                .container {{ max-width: 900px; margin: auto; }}
+                .card {{ background: var(--card); border: 1px solid #262626; border-radius: 12px; padding: 25px; margin-bottom: 25px; border-left: 5px solid var(--accent); transition: transform 0.2s; }}
+                .header-row {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }}
+                .bot-tag {{ font-size: 0.7rem; font-weight: 800; background: #1e293b; padding: 4px 10px; border-radius: 4px; color: var(--accent); text-transform: uppercase; }}
+                .lang-btn {{ background: #1f2937; border: none; color: #94a3b8; padding: 6px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; }}
+                .lang-btn.active {{ background: var(--accent); color: white; }}
+                .hidden {{ display: none !important; }}
+                .rx-box {{ background: rgba(16, 185, 129, 0.05); border: 1px solid var(--safe); border-radius: 8px; padding: 15px; margin-top: 15px; }}
+                .alert-box {{ background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 15px; margin-top: 15px; }}
+                .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
+                .box {{ background: #0a0a0a; padding: 15px; border-radius: 8px; border: 1px solid #1f2937; }}
+                h2 {{ margin: 0; font-size: 1.5rem; }}
+                ul {{ padding-left: 20px; }}
+                @media (max-width: 600px) {{ .grid {{ grid-template-columns: 1fr; }} }}
             </style>
+            <script>
+                function toggleLang(cardId, lang) {{
+                    const card = document.getElementById(cardId);
+                    card.querySelectorAll('.lang-pl, .lang-en').forEach(el => el.classList.add('hidden'));
+                    card.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('hidden'));
+                    card.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+                    card.querySelector('.btn-' + lang).classList.add('active');
+                }}
+            </script>
         </head>
         <body>
+            <div class="container">
+                <header style="padding: 20px 0; border-bottom: 1px solid #262626; margin-bottom: 30px;">
+                    <h1 style="margin:0; font-size: 2.2rem; letter-spacing: -1px;">🛰️ SATELLITE <span style="color:var(--accent)">CORE</span></h1>
+                    <p style="color:#64748b;">Daily Operational Intelligence | {self.timestamp}</p>
+                </header>
 
-        <header>
-            <h1>SATELLITE INDUSTRIAL INTELLIGENCE</h1>
-            <p>Market Report: {REPORT_DATE} | Engine V3.0 | 8:00 AM Daily Feed</p>
-        </header>
-
-        <div class="nav-tabs">
-            <button class="tab-link active" onclick="openTab(event, 'norway')">NORWAY 🇳🇴</button>
-            <button class="tab-link" onclick="openTab(event, 'poland')">POLAND 🇵🇱</button>
-            <button class="tab-link" onclick="openTab(event, 'sweden')">SWEDEN 🇸🇪</button>
-            <button class="tab-link" onclick="openTab(event, 'denmark')">DENMARK 🇩🇰</button>
-        </div>
-
-        <div class="container">
-            <div id="norway" class="tab-content active">
-                <div class="grid">
-                    <div class="card">
-                        <span class="badge badge-pro">Logistics Specialists</span>
-                        <h2>Port & Rail Terminals</h2>
-                        <ul class="hub-list">
-                            <li>Oslo Container Terminal <span>High Demand</span></li>
-                            <li>Drammen Car Port <span>Stable</span></li>
-                            <li>Narvik Iron Hub <span>Strategic</span></li>
-                            <li>Alnabru Rail Terminal <span>Kalmar T8</span></li>
-                        </ul>
-                        <div class="housing-box">
-                            <strong>Studio (Ettroms) Insight:</strong> Costs in Drammen/Moss: 11k-13k NOK. Best balance between wage and privacy.
+                <div class="card" id="ecom-card" style="border-left-color: var(--purple);">
+                    <div class="header-row">
+                        <span class="bot-tag">Bot: E-Com Trend Analyst</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="lang-btn btn-pl active" onclick="toggleLang('ecom-card','pl')">PL</button>
+                            <button class="lang-btn btn-en" onclick="toggleLang('ecom-card','en')">EN</button>
                         </div>
                     </div>
-
-                    <div class="card pro-card">
-                        <span class="badge badge-pro">CNC Experts</span>
-                        <h2>Precision Manufacturing</h2>
-                        <p>Focus: Stavanger Energy Sector & Kongsberg Defense.</p>
-                        <table class="comparison-table">
-                            <tr><th>Control System</th><th>Demand</th><th>Hourly Rate</th></tr>
-                            <tr><td>Heidenhain (5-axis)</td><td>⭐⭐⭐⭐⭐</td><td>320-380 NOK</td></tr>
-                            <tr><td>Fanuc / Siemens</td><td>⭐⭐⭐⭐</td><td>290-340 NOK</td></tr>
-                        </table>
+                    <div class="lang-pl">
+                        <h2>E-Commerce: {results['ecom']['product_name']}</h2>
+                        <div class="grid">
+                            <div class="box"><h3>Status rynkowy</h3><p>{results['ecom']['verdict']}</p></div>
+                            <div class="box"><h3>Zysk Netto</h3><p>{results['ecom']['profit']} PLN</p></div>
+                        </div>
+                        <div class="rx-box">
+                            <h4>📋 ZALECENIA OPERACYJNE:</h4>
+                            <ul>{"".join([f"<li>{a}</li>" for a in results['ecom']['advice_pl']])}</ul>
+                        </div>
                     </div>
+                    <div class="lang-en hidden">
+                        <h2>E-Commerce: {results['ecom']['product_name']}</h2>
+                        <div class="grid">
+                            <div class="box"><h3>Market Status</h3><p>{results['ecom']['verdict']}</p></div>
+                            <div class="box"><h3>Net Profit</h3><p>{results['ecom']['profit']} PLN</p></div>
+                        </div>
+                        <div class="rx-box">
+                            <h4>📋 OPERATIONAL ADVICE:</h4>
+                            <ul>{"".join([f"<li>{a}</li>" for a in results['ecom']['advice_en']])}</ul>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="card entry-card">
-                        <span class="badge badge-entry">Trainee / Helper</span>
-                        <h2>Entry: Road & Site</h2>
-                        <p>Focus: Infrastructure Projects (E39 Highway).</p>
-                        <ul class="hub-list">
-                            <li>Dumper/Wozidło M2 <span>Training Provided</span></li>
-                            <li>Excavator M6 Helper <span>Hours Building</span></li>
-                        </ul>
-                        <p><small>Note: Companies in NO often pay for certification if you start as a site worker.</small></p>
+                <div class="card" id="safety-card" style="border-left-color: var(--danger);">
+                    <div class="header-row">
+                        <span class="bot-tag">Bot: Safety Sentinel</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="lang-btn btn-pl active" onclick="toggleLang('safety-card','pl')">PL</button>
+                            <button class="lang-btn btn-en" onclick="toggleLang('safety-card','en')">EN</button>
+                        </div>
+                    </div>
+                    <div class="lang-pl">
+                        <h2>Weryfikacja Bezpieczeństwa Agencji</h2>
+                        <div class="alert-box">
+                            <h4>🛡️ STATUS: {results['safety']['status']} (Wynik: {results['safety']['score']}/100)</h4>
+                            <ul>{"".join([f"<li>{w}</li>" for w in results['safety']['warnings_pl']])}</ul>
+                        </div>
+                    </div>
+                    <div class="lang-en hidden">
+                        <h2>Agency Safety Verification</h2>
+                        <div class="alert-box">
+                            <h4>🛡️ STATUS: {results['safety']['status']} (Score: {results['safety']['score']}/100)</h4>
+                            <ul>{"".join([f"<li>{w}</li>" for w in results['safety']['warnings_en']])}</ul>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div id="poland" class="tab-content">
-                <div class="grid">
-                    <div class="card">
-                        <h2>Strategic Hubs (PL)</h2>
-                        <ul class="hub-list">
-                            <li>Małaszewicze <span>Silk Road Hub</span></li>
-                            <li>Gdynia/Gdańsk <span>Deepwater Port</span></li>
-                            <li>Gliwice <span>Intermodal Terminal</span></li>
-                            <li>Kąty Wrocławskie <span>Logistics Cluster</span></li>
-                        </ul>
-                    </div>
-
-                    <div class="card entry-card">
-                        <span class="badge badge-entry">Certification Path</span>
-                        <h2>UDT to SFS Conversion</h2>
-                        <p>How to move from Poland to Scandinavia efficiently:</p>
-                        <table class="comparison-table">
-                            <tr><th>Polish Cert</th><th>NO Equivalent</th><th>Step</th></tr>
-                            <tr><td>I WJO (UDT)</td><td>T8 Richstacker</td><td>Translation + SFS Reg</td></tr>
-                            <tr><td>Suwnice (UDT)</td><td>G4 Portal Crane</td><td>Direct Transfer</td></tr>
-                        </table>
-                    </div>
-
-                    <div class="card">
-                        <h2>CNC Industry PL</h2>
-                        <p>Key Cities: Wrocław, Rzeszów, Poznań.</p>
-                        <p>Best for: Gaining "First 1000 Hours" before export to Norway.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            function openTab(evt, tabName) {{
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tab-content");
-                for (i = 0; i < tabcontent.length; i++) {{ tabcontent[i].style.display = "none"; tabcontent[i].classList.remove("active"); }}
-                tablinks = document.getElementsByClassName("tab-link");
-                for (i = 0; i < tablinks.length; i++) {{ tablinks[i].className = tablinks[i].className.replace(" active", ""); }}
-                document.getElementById(tabName).style.display = "block";
-                document.getElementById(tabName).classList.add("active");
-                evt.currentTarget.className += " active";
-            }}
-        </script>
         </body>
         </html>
         """
+        with open(self.output_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        print(f"✅ FINAL REPORT GENERATED: {self.output_path}")
 
-        with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-            f.write(html_template)
-        
-        print("-" * 50)
-        print(f"✅ FINAL SUCCESS!")
-        print(f"📂 Report saved to: {OUTPUT_PATH}")
-        print(f"📈 Strategic analysis for {len(self.hubs['Poland'])} Polish and {len(self.hubs['Norway'])} Norwegian hubs included.")
-        print("-" * 50)
+    def run_daily_check(self):
+        """
+        Main operation loop collecting data from sub-bots.
+        """
+        # 1. E-Commerce Analysis
+        ecom_data = self.ecom.analyze_viral_potential("Portable Blender", 4.8)
+        ecom_data['advice_pl'] = ["Skaluj reklamy na TikTok", "Zwiększ zapasy o 20%"]
+        ecom_data['advice_en'] = ["Scale ads on TikTok", "Increase inventory by 20%"]
+        ecom_data['profit'] = self.finance.calculate_net_profit(40, 129)
+        ecom_data['product_name'] = "Portable Blender"
+
+        # 2. Safety Verification
+        safety_data = self.safety.verify_agency("NordicWork_Test", True, True)
+        safety_data['warnings_pl'] = ["ALARM: Próba zatrzymania paszportu!", "Ryzyko obozu pracy."]
+        safety_data['warnings_en'] = ["ALARM: Passport retention attempt!", "Labor camp risk."]
+
+        # 3. Logistics & Gear
+        housing_data = self.housing.evaluate_housing("Private Studio", 28, ["washing machine", "high-speed internet", "private kitchen"], 3500)
+        gear_data = self.gear.analyze_offer("Kalmar/Reachstacker", 190, "DKK", True)
+        gear_data['machine'] = "Kalmar/Reachstacker"
+        gear_data['advice_pl'] = ["Stawka za niska, ale oferują przyuczenie."]
+        gear_data['advice_en'] = ["Rate too low, but they offer training."]
+
+        # Aggregating all results
+        master_results = {
+            "ecom": ecom_data,
+            "safety": safety_data,
+            "housing": housing_data,
+            "gear": gear_data
+        }
+
+        # 4. Generate report
+        self.generate_html_report(master_results)
 
 if __name__ == "__main__":
     engine = MasterEngine()
-    engine.generate_report()
+    engine.run_daily_check()
