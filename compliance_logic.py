@@ -1,34 +1,23 @@
-# compliance_logic.py
-# This module handles the IPN Protocol (VAT Margin & Fees)
-
 class IPNCompliance:
     def __init__(self):
-        self.p24_commission = 0.019  # Prowizja 1.9%
-        self.max_product_value = 500.0 # Limit bezpieczenstwa
+        self.p24_commission = 0.019
+        self.max_product_value = 500.0
 
     def calculate_net_profit(self, buy_price_ali, sell_price_pl):
-        """
-        Calculates profit before marketing based on your input.
-        Example: 40 PLN (Ali) -> 129 PLN (PL)
-        """
-        if sell_price_pl > self.max_product_value:
-            return 0.0
-        
-        # Obliczenie marży brutto
+        if sell_price_pl > self.max_product_value: return 0.0
         raw_margin = sell_price_pl - buy_price_ali
-        
-        # Odjęcie prowizji płatności (Przelewy24)
         payment_fee = sell_price_pl * self.p24_commission
-        
-        # Zysk netto (przed dochodowym)
-        net_profit = raw_margin - payment_fee
-        
-        return round(net_profit, 2)
+        return round(raw_margin - payment_fee, 2)
 
-# TEST MODUŁU (Uruchomi się tylko gdy odpalisz ten konkretny plik)
-if __name__ == "__main__":
+def get_analysis():
     calc = IPNCompliance()
-    result = calc.calculate_net_profit(40, 129)
-    print(f"--- TEST ZYSKU ---")
-    print(f"Produkt: Portable Blender")
-    print(f"Zysk na reke: {result} PLN")
+    # Przykładowa kalkulacja dla Blendera z Twojego testu
+    profit = calc.calculate_net_profit(40, 129)
+    return f"""
+    <div style="padding: 15px; border: 1px solid #333; border-radius: 10px; border-left: 5px solid #a855f7;">
+        <h3 style="color: #a855f7; margin-top:0;">Protokół IPN: VAT Margin & Fees</h3>
+        <p>Produkt Testowy: <strong>Portable Blender</strong></p>
+        <p>Estymowany Zysk Netto: <strong style="color: #10b981;">{profit} PLN</strong></p>
+        <p style="font-size: 0.8em; color: #888;">Uwzględniono prowizję P24 (1.9%). Limit bezpieczeństwa: {calc.max_product_value} PLN.</p>
+    </div>
+    """
